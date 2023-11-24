@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="StoreManagementSystemX.Views.Transactions.TransactionListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StoreManagementSystemX.Views.Transactions"
+             xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+             xmlns:transactionViewModelInterfaces="clr-namespace:StoreManagementSystemX.ViewModels.Transactions.Interfaces"
+             mc:Ignorable="d" 
+             MinWidth="1280" MinHeight="720"
+             Foreground="{StaticResource #112D4E}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="ActionsColumn" DataType="{x:Type transactionViewModelInterfaces:ITransactionRowViewModel}">
+            <StackPanel>
+                <Button Content="Delete" Command="{Binding DeleteCommand}"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Border Background="{StaticResource #F9F7F7 }">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <views:SidebarView Grid.Column="0" />
+            <Grid Grid.Column="1" Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="72"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" FontWeight="Bold"><Run Language="en-ph" Text="Transactions"/></TextBlock>
+                <Button Content="+ New Transaction" HorizontalAlignment="Right" VerticalAlignment="Center"  Command="{Binding NewTransactionCommand}"/>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="450"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid x:Name="transactionsGrid" d:ItemsSource="{d:SampleData ItemCount=5}" SelectedItem="{Binding SelectedTransaction}" ItemsSource="{Binding Transactions}" AutoGenerateColumns="False" Margin="0,0,16,0" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding DateTime, StringFormat=f}" Width="250" />
+                            <DataGridTextColumn Header="Total Amount" Binding="{Binding TotalPrice}" Width="*"/>
+                            <DataGridTemplateColumn Header="Actions" CellTemplate="{StaticResource ActionsColumn}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="100"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Margin="16,0,0,0" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding ElementName=transactionsGrid, Path=SelectedItem.TransactionProducts, Mode=OneWay}" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
+                                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100"/>
+                                <DataGridTextColumn Header="Price per piece" Binding="{Binding SellingPrice}" Width="100"/>
+                                <DataGridTextColumn Header="Subtotal" Binding="{Binding TotalPrice}" Width="150"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="85" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock TextWrapping="Wrap" FontSize="32" FontWeight="Bold"><Run Text="Total"/><Run Language="en-ph" Text=":"/></TextBlock>
+                            <TextBlock TextWrapping="Wrap" Text="{Binding ElementName=transactionsGrid, Path=SelectedItem.TotalPrice}" FontSize="32" Margin="16,0,0,0" Grid.Column="1"/>
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

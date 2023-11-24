@@ -1,0 +1,42 @@
+﻿<Window x:Class="StoreManagementSystemX.Views.Products.UpdateProductWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StoreManagementSystemX.Views.Products"
+        mc:Ignorable="d"
+        Title="Update Product" Height="450" Width="512" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize">
+    <Border BorderThickness="2" BorderBrush="black">
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition  Height="72"/>
+                <RowDefinition  />
+                <RowDefinition  Height="72"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Product Update" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" FontWeight="Bold"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="172"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Name" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold" Margin="0,0,16,0"/>
+                <TextBox Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" FontSize="24" d:Text="Product Name"/>
+
+                <TextBlock Text="Cost Price" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold" Margin="0,0,16,0" Grid.Row="1"/>
+                <TextBox Text="{Binding CostPrice}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" FontSize="24"/>
+            
+                <TextBlock Text="Selling Price" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold" Margin="0,0,16,0" Grid.Row="2"/>
+                <TextBox Text="{Binding SellingPrice}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" FontSize="24"/>
+
+            </Grid>
+                <Button Content="Submit" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="92" Height="36" Command="{Binding SubmitCommand}"/>
+                <Button Content="Cancel" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="92" Height="36" Margin="0,0,112,0" Command="{Binding CancelCommand}"/>
+        </Grid>
+    </Border>
+</Window>

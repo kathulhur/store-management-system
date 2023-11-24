@@ -1,0 +1,43 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="#F9F7F7">
+        <SolidColorBrush.Color>
+            <Color>
+                <Color.A>255</Color.A>
+                <Color.R>249</Color.R>
+                <Color.G>247</Color.G>
+                <Color.B>247</Color.B>
+            </Color>
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="#DBE2EF">
+        <SolidColorBrush.Color>
+            <Color>
+                <Color.A>255</Color.A>
+                <Color.R>219</Color.R>
+                <Color.G>226</Color.G>
+                <Color.B>239</Color.B>
+            </Color>
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="#3F72AF">
+        <SolidColorBrush.Color>
+            <Color>
+                <Color.A>255</Color.A>
+                <Color.R>63</Color.R>
+                <Color.G>114</Color.G>
+                <Color.B>175</Color.B>
+            </Color>
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="#112D4E">
+        <SolidColorBrush.Color>
+            <Color>
+                <Color.A>255</Color.A>
+                <Color.R>17</Color.R>
+                <Color.G>45</Color.G>
+                <Color.B>78</Color.B>
+            </Color>
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+</ResourceDictionary>

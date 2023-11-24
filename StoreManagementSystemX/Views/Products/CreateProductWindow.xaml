@@ -1,0 +1,48 @@
+﻿<Window x:Class="StoreManagementSystemX.Views.Products.CreateProductWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StoreManagementSystemX"
+        xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="New Product" Height="450" Width="800">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="62"/>
+                <RowDefinition Height="62"/>
+                <RowDefinition Height="62"/>
+                <RowDefinition Height="62"/>
+                <RowDefinition Height="62"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="237" />
+                <ColumnDefinition Width="347.667"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock TextWrapping="Wrap" FontSize="28" Grid.Column="1" FontWeight="Bold" Canvas.Top="52" Grid.Row="1" Grid.ColumnSpan="2"><Run Language="en-ph" Text="New Product"/></TextBlock>
+            
+            <TextBlock TextWrapping="Wrap" FontSize="16" FontWeight="Bold" TextAlignment="Right" Grid.Column="1" Grid.Row="2" UseLayoutRounding="False" Canvas.Left="420.806" Canvas.Top="22.355" VerticalAlignment="Center" Margin="0,0,16,0"><Run Language="en-ph" Text="Barcode"/></TextBlock>
+            <TextBox x:Name="ProductBarcode" Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Row="2" Canvas.Left="268" Canvas.Top="55" VerticalContentAlignment="Center" FontSize="16" Grid.Column="2" Margin="16,16,0,16"/>
+            
+            <TextBlock TextWrapping="Wrap" FontSize="18" Grid.Row="3" Canvas.Left="89" Canvas.Top="129" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,32,0" FontWeight="Bold"><Run Language="en-ph" Text="Name"/></TextBlock>
+            <TextBox x:Name="ProductName" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Row="3" Grid.Column="2" Canvas.Left="185" Canvas.Top="126" FontSize="16" VerticalContentAlignment="Center" Margin="16,16,0,16"/>
+            
+            <TextBlock TextWrapping="Wrap" FontSize="18" Grid.Row="4" Canvas.Left="32" Canvas.Top="188" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,32,0" Text="Cost Price" FontWeight="Bold"/>
+            <TextBox x:Name="ProductCost" Text="{Binding CostPrice, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Row="4" Canvas.Left="185" Canvas.Top="188" VerticalContentAlignment="Center" FontSize="16" Grid.Column="2" Margin="16,16,0,16"/>
+            
+            <TextBlock TextWrapping="Wrap" FontSize="18" Grid.Row="5" Canvas.Left="101" Canvas.Top="252" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,32,0" Text="Selling Price" FontWeight="Bold"/>
+            <TextBox x:Name="ProductPrice" Text="{Binding SellingPrice, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Grid.Column="2" Grid.Row="5" Canvas.Left="185" Canvas.Top="247" VerticalContentAlignment="Center" FontSize="16" Margin="16,16,0,16"/>
+            
+            <Button Content="Submit" Command="{Binding SubmitCommand}" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Right" Width="135" VerticalAlignment="Center" Height="42" Canvas.Left="335" Canvas.Top="330" Margin="137,0,0,0"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Right" Width="135" VerticalAlignment="Center" Height="42" Canvas.Left="335" Canvas.Top="330" Margin="0,0,156,0"/>
+        </Grid>
+    </Grid>
+</Window>

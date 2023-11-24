@@ -1,0 +1,55 @@
+﻿<Window x:Class="StoreManagementSystemX.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StoreManagementSystemX"
+        
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStyle="None"
+        
+        xmlns:viewmodels="clr-namespace:StoreManagementSystemX.ViewModels"
+xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+
+xmlns:productViewModels="clr-namespace:StoreManagementSystemX.ViewModels.Products"
+    xmlns:userViewModels="clr-namespace:StoreManagementSystemX.ViewModels.Users"
+    xmlns:transactionViewModels="clr-namespace:StoreManagementSystemX.ViewModels.Transactions"
+    xmlns:stockPurchaseViewModels="clr-namespace:StoreManagementSystemX.ViewModels.StockPurchases"
+
+    xmlns:productViews="clr-namespace:StoreManagementSystemX.Views.Products"
+    xmlns:userViews="clr-namespace:StoreManagementSystemX.Views.Users"
+    xmlns:transactionViews="clr-namespace:StoreManagementSystemX.Views.Transactions"
+    xmlns:stockPurchaseViews="clr-namespace:StoreManagementSystemX.Views.StockPurchases"
+        
+    >
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+            <views:LoginView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type productViewModels:InventoryViewModel}">
+            <productViews:InventoryView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type transactionViewModels:TransactionListViewModel}">
+            <transactionViews:TransactionListView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type userViewModels:UserListViewModel}">
+            <userViews:UserListView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type transactionViewModels:PayLaterTransactionsViewModel}">
+            <transactionViews:PayLaterTransactionsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type stockPurchaseViewModels:StockPurchaseListViewModel}">
+            <stockPurchaseViews:StockPurchasesListView />
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <ContentControl Content="{Binding NavigationService.CurrentViewModel}"/>
+    </Grid>
+</Window>

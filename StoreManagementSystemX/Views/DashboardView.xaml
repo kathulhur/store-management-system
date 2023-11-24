@@ -1,0 +1,105 @@
+﻿<UserControl x:Class="StoreManagementSystemX.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+             mc:Ignorable="d"
+             MinHeight="720" MinWidth="1280" Foreground="{StaticResource #112D4E}">
+
+    <Border Background="{StaticResource #F9F7F7 }" >
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MaxWidth="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <views:SidebarView Grid.Column="0"/>
+            <Grid Grid.Column="1" Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="72"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <TextBlock d:Text="Tuesday, December, 1, 2023" Text="{Binding DateToday, StringFormat=D}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="32" FontWeight="Bold"/>
+                    <Button Grid.Column="1" Content="+ New Transaction"  HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding NewTransactionCommand}" Width="150" Height="42" Background="{StaticResource #3F72AF}" Foreground="{StaticResource #F9F7F7}" FontWeight="SemiBold">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource #DBE2EF}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource #3F72AF}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="122*"/>
+                        <ColumnDefinition Width="9*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Transactions" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="24" FontWeight="Medium" Margin="16 0 0 48"/>
+                    <TextBlock Text="{Binding TotalTransactionsToday}" d:Text="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="56" Margin="16 0 0 72"/>
+
+
+                    <TextBlock Text="Sales" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="24" FontWeight="Medium" Margin="240 0 0 48"/>
+                    <TextBlock Text="{Binding TotalRevenueToday}" d:Text="493" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="56" Margin="240 0 0 72"/>
+
+                    <TextBlock Text="Profit" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="24" FontWeight="Medium" Margin="440 0 0 48"/>
+                    <TextBlock Text="{Binding TotalProfitToday}" d:Text="120" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="56" Margin="440 0 0 72"/>
+
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Margin="0,0,16,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="72"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Transactions Today" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                        <DataGrid x:Name="TransactionsDataGrid"  Grid.Row="1" ItemsSource="{Binding TransactionsToday}" d:ItemsSource="{d:SampleData ItemCount=5}" SelectedItem="{Binding SelectedTransaction}" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Time" Binding="{Binding DateTime, StringFormat=t}" Width="250"/>
+                                <DataGridTextColumn Header="Total Amount" Binding="{Binding TotalPrice}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                    </Grid>
+                    <Grid Grid.Column="1" Margin="16,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="72"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="72"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="1" Text="Products Purchased" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                        <DataGrid Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ElementName=TransactionsDataGrid, Path=SelectedItem.TransactionProducts}" d:ItemsSource="{d:SampleData ItemCount=5}"  AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
+                                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100"/>
+                                <DataGridTextColumn Header="Price per piece" Binding="{Binding SellingPrice}" Width="100"/>
+                                <DataGridTextColumn Header="Subtotal" Binding="{Binding TotalPrice}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Text="{Binding TotalPurchased}" d:Text="Total: P 320" FontSize="32" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
+                    </Grid>
+
+                </Grid>
+
+
+
+
+
+            </Grid>
+
+
+        </Grid>
+    </Border>
+</UserControl>

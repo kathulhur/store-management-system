@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="StoreManagementSystemX.Views.SidebarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="1280"
+             Foreground="{StaticResource #112D4E}"
+             >
+
+    <StackPanel>
+        <Button x:Name="DashboardButton" Content="Dashboard" Height="58" Click="Dashboard_Button_Click"/>
+        <Button x:Name="InventoryButton" Content="Inventory" Height="58" Click="Inventory_Button_Click"/>
+        <Button x:Name="TransactionsButton" Content="Transactions" Height="58" Click="Transactions_Button_Click"/>
+        <Button x:Name="PayLaterTransactionsButton" Content="Pay Later Transactions" Height="58" Click="Pay_Later_Transactions_Button_Click"/>
+        <Button x:Name="StockPurchasesButton" Content="Stock Purchases" Height="58" Click="Stock_Purchases_Button_Click"/>
+        <Button x:Name="UsersButton" Content="Users" Height="58" Click="Users_Button_Click"/>
+        <Button x:Name="LogoutButton" Content="Logout" Height="58" Click="Logout_Button_Click"/>
+    </StackPanel>
+
+</UserControl>

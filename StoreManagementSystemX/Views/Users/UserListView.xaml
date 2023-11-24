@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="StoreManagementSystemX.Views.Users.UserListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+             xmlns:local="clr-namespace:StoreManagementSystemX.ViewModels.Users"
+             xmlns:userViewModelInterfaces="clr-namespace:StoreManagementSystemX.ViewModels.Users.Interfaces"
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="1280"
+             Foreground="{StaticResource #112D4E}">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ActionsColumn" DataType="{x:Type userViewModelInterfaces:IUserRowViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Update" Command="{Binding UpdateCommand}"/>
+                <Button Content="Delete" Command="{Binding DeleteCommand}"/>
+            </StackPanel>
+        </DataTemplate>
+        
+    </UserControl.Resources>
+    <Border Background="{StaticResource #F9F7F7 }">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <views:SidebarView Grid.Column="0" />
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="128"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="User List" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" Margin="16,0,0,0"/>
+                    <Button x:Name="AddUserButton" Grid.Column="1" Content="+ Add User" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" Command="{Binding NewUserCommand}"/>
+                </Grid>
+                <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" x:Name="UserListGrid" Grid.Row="1" ItemsSource="{Binding Users}" Margin="16,16,16,16" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="250"/>
+                        <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="*"/>
+                        <DataGridTemplateColumn Header="Actions" CellTemplate="{StaticResource ActionsColumn}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Grid>
+        
+    </Border>
+</UserControl>

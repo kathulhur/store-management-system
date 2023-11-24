@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="StoreManagementSystemX.Views.StockPurchases.StockPurchasesListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+             mc:Ignorable="d" 
+             MinWidth="1280" MinHeight="720"
+             Foreground="{StaticResource #112D4E}">
+    <Border Background="{StaticResource #F9F7F7 }">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <views:SidebarView/>
+        <Grid Grid.Column="1" Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Stock Purchases" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Button Content="+ Add Stocks" VerticalAlignment="Center" HorizontalAlignment="Right" FontWeight="SemiBold" Command="{Binding NewStockPurchaseCommand }"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <DataGrid x:Name="StockPurchaseDataGrid" Margin="0 0 16 0" ItemsSource="{Binding StockPurchases}" SelectedItem="{Binding SelectedStockPurchase, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date and Time" Binding="{Binding DateTime, StringFormat=f}" Width="250"/>
+                        <DataGridTextColumn Header="TotalCost" Binding="{Binding TotalCost}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions >
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="100" />
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" Margin="16,0,0,0" ItemsSource="{Binding ElementName=StockPurchaseDataGrid, Path=SelectedItem.StockPurchaseProducts}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Product" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="100"/>
+                            <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100"/>
+                            <DataGridTextColumn Header="Subtotal" Binding="{Binding TotalPrice}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <TextBlock Grid.Row="1" Text="Total: ₱" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="16 0 0 0"/>
+                    <TextBlock Grid.Row="1" Text="{Binding ElementName=StockPurchaseDataGrid, Path=SelectedItem.TotalCost}" d:Text="602" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="112 0 0 0"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+    </Border>
+</UserControl>
