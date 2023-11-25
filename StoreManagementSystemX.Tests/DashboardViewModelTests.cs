@@ -37,7 +37,7 @@ namespace StoreManagementSystemX.Tests
 
             var dialogService = Substitute.For<IDialogService>();
             var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(unitOfWorkFactory.CreateUnitOfWork(), dialogService, authenticatedUser);
+            var authContext = new AuthContext(authenticatedUser);
             var transactionCreationService = Substitute.For<ITransactionCreationService>();
 
             // act: Initialize
@@ -80,7 +80,7 @@ namespace StoreManagementSystemX.Tests
 
             var dialogService = Substitute.For<IDialogService>();
             var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(unitOfWork, dialogService, authenticatedUser);
+            var authContext = new AuthContext(authenticatedUser);
 
             var transactionCreationService = Substitute.For<ITransactionCreationService>();
 
@@ -122,7 +122,7 @@ namespace StoreManagementSystemX.Tests
 
             var dialogService = Substitute.For<IDialogService>();
             var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(unitOfWorkFactory.CreateUnitOfWork(), dialogService, authenticatedUser);
+            var authContext = new AuthContext(authenticatedUser);
             var transactionCreationService = Substitute.For<ITransactionCreationService>();
 
             // act: Initialize
@@ -149,7 +149,7 @@ namespace StoreManagementSystemX.Tests
 
             var dialogService = Substitute.For<IDialogService>();
             var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(unitOfWorkFactory.CreateUnitOfWork(), dialogService, authenticatedUser);
+            var authContext = new AuthContext(authenticatedUser);
 
             var transactionCreationService = Substitute.For<ITransactionCreationService>();
 
@@ -183,7 +183,7 @@ namespace StoreManagementSystemX.Tests
 
             var authenticatedUser = new User { Id = Guid.NewGuid() };
 
-            var authContext = new AuthContext(unitOfWorkFactory.CreateUnitOfWork(), dialogService, authenticatedUser);
+            var authContext = new AuthContext(authenticatedUser);
             var transactionCreationService = Substitute.For<ITransactionCreationService>();
 
             // act: Initialize
@@ -204,7 +204,7 @@ namespace StoreManagementSystemX.Tests
 
             var dialogService = Substitute.For<IDialogService>();
             var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(unitOfWorkFactory.CreateUnitOfWork(), dialogService, authenticatedUser);
+            var authContext = new AuthContext(authenticatedUser);
             var transactionCreationService = Substitute.For<ITransactionCreationService>();
 
             // act: Initialize

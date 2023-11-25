@@ -12,7 +12,7 @@ namespace StoreManagementSystemX.Services
 {
     public class AuthContext
     {
-        public AuthContext(IUnitOfWork unitOfWork, IDialogService dialogService, User authenticatedUser)
+        public AuthContext(User authenticatedUser)
         {
             CurrentUser = new AuthUser(authenticatedUser);
         }

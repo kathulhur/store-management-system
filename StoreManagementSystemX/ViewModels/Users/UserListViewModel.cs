@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace StoreManagementSystemX.ViewModels.Users
 {
-    class UserListViewModel : BaseViewModel, IUserListViewModel
+    public class UserListViewModel : BaseViewModel, IUserListViewModel
     {
 
         public UserListViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, IUserCreationService userCreationService)

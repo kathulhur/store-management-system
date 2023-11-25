@@ -29,7 +29,7 @@ namespace StoreManagementSystemX.Services
             var storedUser = _unitOfWork.UserRepository.Find(u => u.Username == username && u.Password == password);
             if(storedUser != null)
             {
-                AuthContext = new AuthContext(_unitOfWork, _dialogService, storedUser);
+                AuthContext = new AuthContext(storedUser);
             } else
             {
                 throw new Exception("Username or password is incorrect");

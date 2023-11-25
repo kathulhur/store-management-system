@@ -38,7 +38,7 @@ namespace StoreManagementSystemX.Tests
 
             var dialogService = Substitute.For<IDialogService>();
 
-            var authContext = new AuthContext(unitOfWork, dialogService, new User());
+            var authContext = new AuthContext(new User());
             var productUpdateService = Substitute.For<IProductUpdateService>();
             var productCreationService = Substitute.For<IProductCreationService>();
             // act
@@ -81,7 +81,7 @@ namespace StoreManagementSystemX.Tests
             var dialogService = Substitute.For<IDialogService>();
             dialogService.ShowConfirmationDialog("title", "message").ReturnsForAnyArgs(true);
 
-            var authContext = new AuthContext(unitOfWork, dialogService, new User());
+            var authContext = new AuthContext(new User());
             
             var productUpdateService = Substitute.For<IProductUpdateService>();
             
@@ -135,7 +135,7 @@ namespace StoreManagementSystemX.Tests
             var dialogService = Substitute.For<IDialogService>();
             dialogService.ShowConfirmationDialog("title", "message").ReturnsForAnyArgs(false);
 
-            var authContext = new AuthContext(unitOfWork, dialogService, new User());
+            var authContext = new AuthContext(new User());
 
             var productUpdateService = Substitute.For<IProductUpdateService>();
 
@@ -183,7 +183,7 @@ namespace StoreManagementSystemX.Tests
             var dialogService = Substitute.For<IDialogService>();
             dialogService.ShowConfirmationDialog("title", "message").ReturnsForAnyArgs(false);
 
-            var authContext = new AuthContext(unitOfWork, dialogService, new User());
+            var authContext = new AuthContext(new User());
 
             var productUpdateService = Substitute.For<IProductUpdateService>();
             productUpdateService.UpdateProduct(productId).ReturnsForAnyArgs(ProductUpdateServiceResponse.Success);
