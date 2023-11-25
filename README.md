@@ -52,7 +52,8 @@ Build and run the application from Visual Studio.
 ### Roadmap
 
 The project roadmap outlines future enhancements and features planned for the Store Management System. The current focus includes:
-[ ] - Cash register for mirroring the actual cash in the actual register
+
+- [ ] Cash register for mirroring the actual cash in the actual register
 
 Integration of additional reporting features.
 Enhanced user authentication and authorization mechanisms.
