@@ -233,7 +233,6 @@ namespace StoreManagementSystemX.Tests
             // act
             viewModel.NewTransactionCommand.Execute(null);
 
-
             // assert
             Assert.Equal(transactions.Count + 1, viewModel.Transactions.Count);
         }
