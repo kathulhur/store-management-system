@@ -3,27 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:StoreManagementSystemX"
     StartupUri="MainWindow.xaml"
-    xmlns:viewmodels="clr-namespace:StoreManagementSystemX.ViewModels"
-    xmlns:views="clr-namespace:StoreManagementSystemX.Views"
-
-    xmlns:productViewModels="clr-namespace:StoreManagementSystemX.ViewModels.StockPurchases"
-    xmlns:userViewModels="clr-namespace:StoreManagementSystemX.ViewModels.Users"
-    xmlns:transactionViewModels="clr-namespace:StoreManagementSystemX.ViewModels.Transactions"
-    xmlns:stockPurchaseViewModels="clr-namespace:StoreManagementSystemX.ViewModels.StockPurchases"
-
-    xmlns:productViews="clr-namespace:StoreManagementSystemX.Views.Products"
-    xmlns:userViews="clr-namespace:StoreManagementSystemX.Views.Users"
-    xmlns:transactionViews="clr-namespace:StoreManagementSystemX.Views.Transactions"
-    xmlns:stockPurchaseViews="clr-namespace:StoreManagementSystemX.Views.StockPurchases"
 >
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles.xaml"/>
+                <ResourceDictionary Source="DataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
-            
-            
         </ResourceDictionary>
     </Application.Resources>
 </Application>
