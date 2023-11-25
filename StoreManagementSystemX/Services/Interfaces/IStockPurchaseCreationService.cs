@@ -8,6 +8,6 @@ namespace StoreManagementSystemX.Services.Interfaces
 {
     public interface IStockPurchaseCreationService
     {
-        public Guid? OpenCreateStockPurchaseWindow(AuthContext authContext);
+        public Guid? CreateStockPurchase(AuthContext authContext);
     }
 }

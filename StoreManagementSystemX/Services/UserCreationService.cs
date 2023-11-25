@@ -21,15 +21,12 @@ namespace StoreManagementSystemX.Services
         public Guid? CreateNewUser(AuthContext authContext)
         {
             Guid? newUserId = null;
-            using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            var window = new CreateUserWindow(authContext, _unitOfWorkFactory, (Guid id) =>
             {
-                var window = new CreateUserWindow(authContext, unitOfWork, (Guid id) =>
-                {
-                    newUserId = id;
-                });
+                newUserId = id;
+            });
 
-                window.ShowDialog();
-            }
+            window.ShowDialog();
 
             return newUserId;
         }

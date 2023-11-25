@@ -20,7 +20,7 @@ namespace StoreManagementSystemX.Services
         private readonly IDialogService _dialogService;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public Guid? OpenCreateStockPurchaseWindow(AuthContext authContext)
+        public Guid? CreateStockPurchase(AuthContext authContext)
         {
             Guid? newStockPurchase = null;
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())

@@ -24,11 +24,11 @@ namespace StoreManagementSystemX.Views.Users
     /// </summary>
     public partial class CreateUserWindow : Window
     {
-        public CreateUserWindow(AuthContext authContext, IUnitOfWork unitOfWork, Action<Guid> onCreate)
+        public CreateUserWindow(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, Action<Guid> onCreate)
         {
             InitializeComponent();
 
-            _viewModel = new CreateUserViewModel(authContext, unitOfWork, onCreate, () =>
+            _viewModel = new CreateUserViewModel(authContext, unitOfWorkFactory, onCreate, () =>
             {
                 Close();
             });

@@ -57,7 +57,7 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 
         public void OnNewTransaction()
         {
-            var newStockPurchaseId = _createStockPurchaseWindowService.OpenCreateStockPurchaseWindow(_authContext);
+            var newStockPurchaseId = _createStockPurchaseWindowService.CreateStockPurchase(_authContext);
             {
                 using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {

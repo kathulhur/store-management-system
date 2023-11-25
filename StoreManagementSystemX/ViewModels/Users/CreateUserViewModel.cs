@@ -17,9 +17,9 @@ namespace StoreManagementSystemX.ViewModels.Users
 {
     public class CreateUserViewModel : ObservableObject, ICreateUserViewModel
     {
-        public CreateUserViewModel(AuthContext authContext, IUnitOfWork unitOfWork, Action<Guid> onCreate, Action close)
+        public CreateUserViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, Action<Guid> onCreate, Action close)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _authContext = authContext;
             _onCreate = onCreate;
             _close = close;
@@ -27,7 +27,7 @@ namespace StoreManagementSystemX.ViewModels.Users
             CancelCommand = new RelayCommand(CancelCommandHandler);
         }
 
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
         private readonly AuthContext _authContext;
 
@@ -51,10 +51,14 @@ namespace StoreManagementSystemX.ViewModels.Users
             {
                 Console.WriteLine("password: " + password);
                 User newUser = new User { Id = Guid.NewGuid(), CreatedById = _authContext.CurrentUser.Id, Username = Username, Password = password };
-                _unitOfWork.UserRepository.Insert(newUser);
-                _unitOfWork.Save();
-                _onCreate(newUser.Id);
-                _close();
+                using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                {
+                    unitOfWork.UserRepository.Insert(newUser);
+                    unitOfWork.Save();
+                    _onCreate(newUser.Id);
+                    _close();
+
+                }
             }
         }
 
