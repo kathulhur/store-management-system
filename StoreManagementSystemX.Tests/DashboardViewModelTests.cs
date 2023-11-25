@@ -49,6 +49,42 @@ namespace StoreManagementSystemX.Tests
             Assert.Equal(5, dashboardViewModel.TotalTransactionsToday);
         }
 
+        [Fact]
+        public void Only_transactions_happened_today_are_included()
+        {
+
+            // arrange
+            var transactions = new List<Transaction>()
+            {
+                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
+                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
+                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
+                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
+                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
+                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now.AddDays(-2)}
+            };
+
+            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
+            var unitOfWork = Substitute.For<IUnitOfWork>();
+
+            unitOfWork.TransactionRepository.GetAll().Returns(transactions);
+
+            unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
+
+            var dialogService = Substitute.For<IDialogService>();
+            var authenticatedUser = new User { Id = Guid.NewGuid() };
+            var authContext = new AuthContext(authenticatedUser);
+            var transactionCreationService = Substitute.For<ITransactionCreationService>();
+
+            // act: Initialize
+            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
+
+
+            // assert
+            Assert.Equal(5, dashboardViewModel.TransactionsToday.Count);
+            Assert.Equal(5, dashboardViewModel.TotalTransactionsToday);
+        }
+
 
         [Fact]
         public void Daily_revenue_correctly_computed()

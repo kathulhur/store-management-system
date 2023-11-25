@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace StoreManagementSystemX.ViewModels.Transactions
 {
-    class TransactionListViewModel : BaseViewModel, ITransactionListViewModel
+    public class TransactionListViewModel : BaseViewModel, ITransactionListViewModel
     {
         public TransactionListViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, ITransactionCreationService transactionCreationService)
         {
