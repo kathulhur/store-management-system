@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StoreManagementSystemX.Database.DAL.Interfaces;
 
-public interface IProductRepository: IRepository<Product>
+public interface IProductRepository : IRepository<Product>
 {
     Product? GetByBarcode(string barcode);
 

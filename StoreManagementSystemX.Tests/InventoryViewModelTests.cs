@@ -15,8 +15,10 @@ using System.Threading.Tasks;
 
 namespace StoreManagementSystemX.Tests
 {
+
     public class InventoryViewModelTests
     {
+        private static IBarcodeImageService _barcodeImageServce = new BarcodeImageService();
         [Fact]
         public void Products_loads_all_records()
         {
@@ -33,11 +35,12 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.ProductRepository.GetAll().Returns(products);
+            unitOfWork.ProductRepository.Get().Returns(products);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var dialogService = Substitute.For<IDialogService>();
 
+            
             var authContext = new AuthContext(new User());
             var productUpdateService = Substitute.For<IProductUpdateService>();
             var productCreationService = Substitute.For<IProductCreationService>();
@@ -47,7 +50,8 @@ namespace StoreManagementSystemX.Tests
                 unitOfWorkFactory, 
                 dialogService,
                 productUpdateService,
-                productCreationService
+                productCreationService,
+                _barcodeImageServce
             );
 
             // assert
@@ -73,7 +77,7 @@ namespace StoreManagementSystemX.Tests
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
 
-            unitOfWork.ProductRepository.GetAll().Returns(products);
+            unitOfWork.ProductRepository.Get().Returns(products);
     
 
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
@@ -92,7 +96,8 @@ namespace StoreManagementSystemX.Tests
                 unitOfWorkFactory,
                 dialogService,
                 productUpdateService,
-                productCreationService
+                productCreationService,
+                _barcodeImageServce
             );
 
             var foundProduct = inventoryViewModel.Products.First(p => p.Id == productId);
@@ -127,7 +132,7 @@ namespace StoreManagementSystemX.Tests
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
 
-            unitOfWork.ProductRepository.GetAll().Returns(products);
+            unitOfWork.ProductRepository.Get().Returns(products);
 
 
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
@@ -146,7 +151,8 @@ namespace StoreManagementSystemX.Tests
                 unitOfWorkFactory,
                 dialogService,
                 productUpdateService,
-                productCreationService
+                productCreationService,
+                _barcodeImageServce
             );
 
             var foundProduct = inventoryViewModel.Products.First(p => p.Id == productId);
@@ -176,7 +182,7 @@ namespace StoreManagementSystemX.Tests
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
 
-            unitOfWork.ProductRepository.GetAll().Returns(products);
+            unitOfWork.ProductRepository.Get().Returns(products);
             unitOfWork.ProductRepository.GetById(productId).Returns(updatedProduct);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
@@ -195,7 +201,8 @@ namespace StoreManagementSystemX.Tests
                 unitOfWorkFactory,
                 dialogService,
                 productUpdateService,
-                productCreationService
+                productCreationService,
+                _barcodeImageServce
             );
 
             var foundProduct = inventoryViewModel.Products.First(p => p.Id == productId);

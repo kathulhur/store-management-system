@@ -12,18 +12,22 @@ namespace StoreManagementSystemX.Services
     public class ProductCreationService : IProductCreationService
     {
         
-        public ProductCreationService(IUnitOfWorkFactory unitOfWorkFactory)
+        public ProductCreationService(IUnitOfWorkFactory unitOfWorkFactory, IBarcodeGeneratorService barcodeGeneratorService, IBarcodeImageService barcodeImageService)
         {
             _unitOfWorkFactory = unitOfWorkFactory;
+            _barcodeGeneratorService = barcodeGeneratorService;
+            _barcodeImageService = barcodeImageService;
         }
 
+        private readonly IBarcodeImageService _barcodeImageService;
+        private readonly IBarcodeGeneratorService _barcodeGeneratorService;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         public Guid? CreateNewProduct(AuthContext authContext)
         {
             using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
                 Guid? newProductId = null;
-                var window = new CreateProductWindow(authContext, unitOfWork, (Guid Id) =>
+                var window = new CreateProductWindow(authContext, unitOfWork, _barcodeGeneratorService, _barcodeImageService, (Guid Id) =>
                 {
                     newProductId = Id;
                 });

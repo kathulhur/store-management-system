@@ -18,25 +18,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace StoreManagementSystemX.ViewModels.Products
 {
     public class InventoryViewModel : BaseViewModel, IInventoryViewModel
     {
-        public InventoryViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, IProductUpdateService productUpdateService, IProductCreationService productCreationService)
+        public InventoryViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, IProductUpdateService productUpdateService, IProductCreationService productCreationService, IBarcodeImageService barcodeImageService)
         {
             _unitOfWorkFactory = unitOfWorkFactory;
             _authContext = authContext;
             _dialogService = dialogService;
             _productUpdateService = productUpdateService;
             _productCreationService = productCreationService;
+            _barcodeImageService = barcodeImageService;
 
             Products = new ObservableCollection<IProductRow>();
             using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
 
-                foreach (Product p in unitOfWork.ProductRepository.GetAll())
+                foreach (Product p in unitOfWork.ProductRepository.Get())
                 {
                     AddProductToList(p);
                 }
@@ -46,6 +48,7 @@ namespace StoreManagementSystemX.ViewModels.Products
             AddProductCommand = new RelayCommand(AddProductCommandHandler);
         }
 
+        private readonly IBarcodeImageService _barcodeImageService;
         private readonly IProductCreationService _productCreationService;
 
         private readonly IProductUpdateService _productUpdateService;
@@ -120,11 +123,14 @@ namespace StoreManagementSystemX.ViewModels.Products
                 _product = product;
                 UpdateCommand = new RelayCommand(UpdateCommandHandler);
                 DeleteCommand = new RelayCommand(DeleteCommandHandler);
+                BarcodeImage = _parent._barcodeImageService.GenerateBarcodeImage(product.Barcode);
             }
 
             private Product _product;
 
             public Guid Id => _product.Id;
+
+            public ImageSource BarcodeImage { get; }
 
             public string Barcode => _product.Barcode;
 

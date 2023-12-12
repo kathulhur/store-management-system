@@ -6,18 +6,33 @@
              xmlns:views="clr-namespace:StoreManagementSystemX.Views"
              mc:Ignorable="d"
              xmlns:productViewModelInterfaces="clr-namespace:StoreManagementSystemX.ViewModels.Products.Interfaces"
-             MinWidth="1280" MinHeight="720">
+             MinWidth="1280" MinHeight="720"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             >
     <Border Background="{StaticResource #F9F7F7 }">
         
     <Grid>
         <Grid.Resources>
             <DataTemplate x:Key="ActionsColumnTemplate">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Update" Margin="0,0,8,0" Command="{Binding UpdateCommand}" CommandParameter="{Binding }" />
-                    <Button Content="Delete" Command="{Binding DeleteCommand}" MinWidth="50" /> 
+                    <Button Content="Update" Margin="0,0,8,0" Command="{Binding UpdateCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
+                    <Button Content="Delete" Command="{Binding DeleteCommand}" MinWidth="50" Style="{DynamicResource MaterialDesignOutlinedButton}"/> 
                 </StackPanel>
             </DataTemplate>
-        </Grid.Resources>
+            <DataTemplate x:Key="BarcodeColumnTemplate" DataType="{x:Type productViewModelInterfaces:IProductRow}">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="{Binding BarcodeImage}"  Height="94"/>
+                    <TextBlock Text="{Binding Barcode}"/>
+                </StackPanel>
+            </DataTemplate>
+            </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="200"/>
             <ColumnDefinition/>
@@ -33,8 +48,8 @@
 
             <DataGrid VerticalContentAlignment="Center" ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" Grid.Row="1" Grid.ColumnSpan="3" IsReadOnly="True" d:ItemsSource="{d:SampleData ItemCount=5}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="200" Header="Barcode" Binding="{Binding Barcode}"/>
-                    <DataGridTextColumn Width="*" Header="Product" Binding="{Binding Name}"/>
+                    <DataGridTemplateColumn Header="Barcode" CellTemplate="{StaticResource BarcodeColumnTemplate}" />
+                    <DataGridTextColumn Width="*" Header="Product" Binding="{Binding Name}" FontSize="18"/>
                     <DataGridTextColumn Width="100" Header="In Stock" Binding="{Binding InStock}" IsReadOnly="True"/>
                     <DataGridTextColumn Width="100" Header="Cost Price" Binding="{Binding CostPrice}"/>
                     <DataGridTextColumn Width="100" Header="Selling price" Binding="{Binding SellingPrice}"/>

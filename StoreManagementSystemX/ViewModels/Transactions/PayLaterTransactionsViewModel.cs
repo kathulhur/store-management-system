@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace StoreManagementSystemX.ViewModels.Transactions
 {
-    class PayLaterTransactionsViewModel: BaseViewModel
+    public class PayLaterTransactionsViewModel: BaseViewModel
     {
         public PayLaterTransactionsViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, ITransactionCreationService transactionCreationService)
         {
@@ -25,10 +25,10 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             _dialogService = dialogService;
             _transactionCreationService = transactionCreationService;
             Transactions = new ObservableCollection<PayLaterTransactionRowViewModel>();
-
+            NewTransactionCommand = new RelayCommand(NewTransactionCommandHandler);
             using(var unitOfWork  = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                foreach(var transaction in unitOfWork.TransactionRepository.Find(t => t.PayLater != null).OrderByDescending(t => t.DateTime))
+                foreach(var transaction in unitOfWork.TransactionRepository.Get(t => t.PayLater != null, t => t.OrderByDescending(t => t.DateTime), "TransactionProducts, TransactionProducts.Product, PayLater"))
                 {
                     if(transaction != null)
                     {
@@ -58,12 +58,15 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             {
                 using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
-                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid)newTransactionId);
+                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid)newTransactionId, "TransactionProducts, TransactionProducts.Product, PayLater");
                     if(newTransaction != null)
                     {
-                        var newTransactionRow = new PayLaterTransactionRowViewModel(_unitOfWorkFactory, newTransaction, _dialogService);
-                        //SubscribeToTransactionRowEvents(newTransactionRow);
-                        Transactions.Insert(0, newTransactionRow);
+                        if (newTransaction.PayLater != null) { }
+                        {
+                            var newTransactionRow = new PayLaterTransactionRowViewModel(_unitOfWorkFactory, newTransaction, _dialogService);
+                            //SubscribeToTransactionRowEvents(newTransactionRow);
+                            Transactions.Insert(0, newTransactionRow);
+                        }
                     }
                 }
 

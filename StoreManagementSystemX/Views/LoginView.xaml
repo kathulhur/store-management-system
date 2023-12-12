@@ -5,43 +5,49 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:views="clr-namespace:StoreManagementSystemX.Views"
              mc:Ignorable="d"
-             Height="360" Width="700"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
              >
     <Border CornerRadius="25" BorderThickness="1">
-        <Border.Background>
-            <SolidColorBrush>
-                <SolidColorBrush.Color>
-                    <Color>
-                        <Color.A>255</Color.A>
-                        <Color.R>249</Color.R>
-                        <Color.G>247</Color.G>
-                        <Color.B>247</Color.B>
-                    </Color>
-                </SolidColorBrush.Color>
-            </SolidColorBrush>
-        </Border.Background>
         <Grid>
-            <Grid Grid.Row="1" Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="80"/>
-                    <RowDefinition Height="80"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="500"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Store Management System" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold"/>
-                <TextBlock Text="Username" FontSize="24" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="24,0"/>
-                <TextBox Grid.Column="1" FontSize="24" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" TextWrapping="Wrap"  Margin="12,12,100,12" VerticalContentAlignment="Center" />
-                
-                <Label Content="Password" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" FontSize="24"/>
-                <PasswordBox x:Name="Password_Field" FontSize="24" Grid.Column="1"  Grid.Row="2" Margin="12,12,100,12" VerticalContentAlignment="Center"/>
-                <Button Content="Login" HorizontalAlignment="Right" Margin="0,20,100,0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" Click="Login_Button_Click" FontWeight="Bold" IsDefault="True" Width="128" Height="42"/>
-                <Button Content="Exit" HorizontalAlignment="Right" Margin="0,20,248,0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" Click="Exit_Button_Click" FontWeight="Bold" Width="128" Height="42"/>
-        </Grid>
-    </Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="360"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="700"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="80"/>
+                        <RowDefinition Height="80"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="500"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Store Management System" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="24"/>
+                    <TextBlock Text="Username" Grid.Row="1" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="24,0"/>
+                    <TextBox Grid.Column="1" d:Text="hello" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"  Margin="12,12,100,12" Style="{DynamicResource MaterialDesignFilledTextBox}"/>
 
+                    <Label Content="Password" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" FontSize="24"/>
+                    <PasswordBox x:Name="Password_Field" d:Password="password" Grid.Column="1"  Grid.Row="2" Margin="12,12,100,12" Style="{DynamicResource MaterialDesignFilledPasswordBox}"/>
+                    <Button Content="Login" HorizontalAlignment="Right" Margin="0,20,100,0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" Click="Login_Button_Click" FontWeight="Bold" IsDefault="True" Width="128" Height="42"/>
+                    <Button Style="{DynamicResource MaterialDesignOutlinedButton}" Content="Exit" HorizontalAlignment="Right" Margin="0,20,248,0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" Click="Exit_Button_Click" FontWeight="Bold" Width="128" Height="42"/>
+                </Grid>
+            </Grid>
+        </Grid>
     </Border>
 </UserControl>

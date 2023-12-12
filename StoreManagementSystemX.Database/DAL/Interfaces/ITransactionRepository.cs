@@ -11,8 +11,6 @@ namespace StoreManagementSystemX.Database.DAL
 {
     public interface ITransactionRepository: IRepository<Transaction>
     {
-
-        public IEnumerable<Transaction> Find(Expression<Func<Transaction, bool>> predicate);
-
+        public Transaction? GetById(Guid transactionId, string includeProperties = "");
     }
 }

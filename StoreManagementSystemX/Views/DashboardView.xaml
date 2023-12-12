@@ -4,10 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:views="clr-namespace:StoreManagementSystemX.Views"
+             xmlns:viewModels="clr-namespace:StoreManagementSystemX.ViewModels"
              mc:Ignorable="d"
-             MinHeight="720" MinWidth="1280" Foreground="{StaticResource #112D4E}">
+             d:DataContext="{x:Type viewModels:DashboardViewModel}"
+             MinHeight="720" MinWidth="1280"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             >
 
-    <Border Background="{StaticResource #F9F7F7 }" >
+    <Border >
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MaxWidth="200"/>
@@ -22,18 +33,7 @@
                 </Grid.RowDefinitions>
                 <Grid>
                     <TextBlock d:Text="Tuesday, December, 1, 2023" Text="{Binding DateToday, StringFormat=D}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="32" FontWeight="Bold"/>
-                    <Button Grid.Column="1" Content="+ New Transaction"  HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding NewTransactionCommand}" Width="150" Height="42" Background="{StaticResource #3F72AF}" Foreground="{StaticResource #F9F7F7}" FontWeight="SemiBold">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource #DBE2EF}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource #3F72AF}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    <Button Grid.Column="1" Content="+ New Transaction"  HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding NewTransactionCommand}" FontWeight="SemiBold"/>
                 </Grid>
 
                 <Grid Grid.Row="1">
@@ -87,7 +87,12 @@
                                 <DataGridTextColumn Header="Subtotal" Binding="{Binding TotalPrice}" Width="100"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <TextBlock Text="{Binding TotalPurchased}" d:Text="Total: P 320" FontSize="32" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                        <Label FontSize="32" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="₱ " FontSize="32"/>
+                                <TextBlock Text="{Binding ElementName=TransactionsDataGrid, Path=SelectedItem.TotalPrice}" FontSize="32" FontWeight="Bold" d:Text="200"/>
+                            </StackPanel>
+                        </Label>
 
                     </Grid>
 

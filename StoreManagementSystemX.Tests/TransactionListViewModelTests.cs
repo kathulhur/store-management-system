@@ -31,7 +31,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.TransactionRepository.GetAll().Returns(transactions);
+            unitOfWork.TransactionRepository.Get().Returns(transactions);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var dialogService = Substitute.For<IDialogService>();
@@ -67,7 +67,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.TransactionRepository.GetAll().Returns(transactions);
+            unitOfWork.TransactionRepository.Get().Returns(transactions);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var dialogService = Substitute.For<IDialogService>();
@@ -106,7 +106,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.TransactionRepository.GetAll().Returns(transactions);
+            unitOfWork.TransactionRepository.Get().Returns(transactions);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var dialogService = Substitute.For<IDialogService>();
@@ -147,7 +147,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.TransactionRepository.GetAll().Returns(transactions);
+            unitOfWork.TransactionRepository.Get().Returns(transactions);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var dialogService = Substitute.For<IDialogService>();
@@ -177,7 +177,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.TransactionRepository.GetAll().Returns(transactions);
+            unitOfWork.TransactionRepository.Get().Returns(transactions);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var dialogService = Substitute.For<IDialogService>();
@@ -214,7 +214,7 @@ namespace StoreManagementSystemX.Tests
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
             unitOfWork.TransactionRepository.GetById(newTransaction.Id).Returns(newTransaction);
-            unitOfWork.TransactionRepository.GetAll().Returns(transactions);
+            unitOfWork.TransactionRepository.Get().Returns(transactions);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var dialogService = Substitute.For<IDialogService>();

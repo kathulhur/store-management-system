@@ -7,25 +7,38 @@
         mc:Ignorable="d"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="Store Management System: New User" Height="288" Width="540">
+        WindowStyle="None"
+        Title="Store Management System: New User" Height="300" Width="540"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        >
+    <Border BorderThickness="1" BorderBrush="Black">
+        
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="94"/>
             <RowDefinition Height="62"/>
-            <RowDefinition Height="62"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="62"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" MinWidth="169"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Content="New User" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Height="32" Width="82" Margin="0,0,16,0"/>
-        <Label Content="Username" Grid.Row="1" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Height="32" Width="81" Margin="0,0,16,0"/>
-        <Label Content="Password" Grid.Row="2" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Height="32" Width="76" Margin="0,0,16,0"/>
-        <TextBox Grid.Column="1" HorizontalAlignment="Left" Margin="16,0,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Username}" VerticalAlignment="Center" Width="274" Height="32" VerticalContentAlignment="Center"/>
-        <PasswordBox x:Name="Password_Box" Grid.Column="1" HorizontalAlignment="Left" Margin="16,0,0,0" Grid.Row="2" VerticalAlignment="Center" Width="274" Height="32" VerticalContentAlignment="Center"/>
-        <Button Grid.Column="1" Content="Create" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Center" Height="28" Width="72" Margin="218,0,0,0" Click="Submit_Button_Click" IsDefault="True"/>
-        <Button Grid.Column="1" Content="Cancel" Grid.Row="3" Height="28" Width="72" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="133,0,0,0" Command="{Binding CancelCommand}"/>
+        <Label Content="New User" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Height="32" Margin="0,0,16,0"/>
+        <Label Content="Username" Grid.Row="1" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Height="32" Margin="0,0,16,0"/>
+        <Label Content="Password" Grid.Row="3" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Height="32" Margin="0,0,16,0"/>
+        <TextBox Grid.Column="1" Width="250" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Username}" Style="{DynamicResource MaterialDesignFilledTextBox}"/>
+        <PasswordBox x:Name="Password_Box" Width="250" Grid.Column="1" Grid.Row="3" Style="{DynamicResource MaterialDesignFilledPasswordBox}"/>
+        <Button Grid.Column="1" Content="Create" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center" Margin="218,0,0,0" Click="Submit_Button_Click" IsDefault="True"/>
+        <Button Grid.Column="1" Content="Cancel" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="133,0,0,0" Command="{Binding CancelCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
 
     </Grid>
+    </Border>
 </Window>

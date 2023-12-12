@@ -8,12 +8,19 @@
              xmlns:transactionViewModelInterfaces="clr-namespace:StoreManagementSystemX.ViewModels.Transactions.Interfaces"
              mc:Ignorable="d" 
              MinWidth="1280" MinHeight="720"
-             Foreground="{StaticResource #112D4E}">
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
 
     <UserControl.Resources>
         <DataTemplate x:Key="ActionsColumn" DataType="{x:Type transactionViewModelInterfaces:ITransactionRowViewModel}">
             <StackPanel>
-                <Button Content="Delete" Command="{Binding DeleteCommand}"/>
+                <Button Content="Delete" Command="{Binding DeleteCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}" Foreground="DarkRed"/>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>

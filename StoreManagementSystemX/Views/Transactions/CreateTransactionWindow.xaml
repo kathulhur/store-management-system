@@ -7,25 +7,32 @@
         xmlns:transactionViewModelInterfaces="clr-namespace:StoreManagementSystemX.ViewModels.Transactions.Interfaces"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="New Transaction" Height="512" Width="900" ResizeMode="NoResize" WindowStyle="None">
+        Title="New Transaction" Height="512" Width="900" ResizeMode="NoResize" WindowStyle="None"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        >
     <Window.Resources>
 
         <DataTemplate x:Key="CreateTransactionProductActionsColumn" DataType="{x:Type transactionViewModelInterfaces:ICreateTransactionProductViewModel}">
             <StackPanel>
-                <Button Content="Remove" Command="{Binding RemoveCommand}"/>
+                <Button Content="Remove" Command="{Binding RemoveCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="CreateTransactionProductQuantityColumn" DataType="{x:Type transactionViewModelInterfaces:ICreateTransactionProductViewModel}">
             <StackPanel Orientation="Horizontal">
-                <Button Content="-" Command="{Binding DecrementQuantityCommand}" Width="20" />
+                <Button Content="-" Command="{Binding DecrementQuantityCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}" />
                 <TextBlock Text="{Binding Quantity}" Margin="16,0"/>
-                <Button Content="+" Command="{Binding IncrementQuantityCommand}" Width="20"/>
+                <Button Content="+" Command="{Binding IncrementQuantityCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
     <Border BorderThickness="1" BorderBrush="Black">
-
-
+        
         <Grid>
             <Grid Margin="16,16,16,16">
                 <Grid.RowDefinitions>
@@ -34,13 +41,13 @@
                     <RowDefinition/>
                     <RowDefinition Height="59"/>
                 </Grid.RowDefinitions>
-                <DataGrid Grid.Row="2" ItemsSource="{Binding TransactionProducts}" d:ItemsSource="{d:SampleData ItemCount=5}" AutoGenerateColumns="False">
+                <DataGrid Grid.Row="2" ItemsSource="{Binding TransactionProducts}" d:ItemsSource="{d:SampleData ItemCount=5}" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Product" Binding="{Binding ProductName, NotifyOnSourceUpdated=True}" Width="*"/>
-                        <DataGridTextColumn Header="Price per piece" Binding="{Binding Price, NotifyOnSourceUpdated=True}" Width="100"/>
-                        <DataGridTemplateColumn Header="Quantity" CellTemplate="{StaticResource CreateTransactionProductQuantityColumn}" />
-                        <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, NotifyOnSourceUpdated=True}" Width="*" MaxWidth="100"/>
-                        <DataGridTemplateColumn CellTemplate="{StaticResource CreateTransactionProductActionsColumn}" Width="64" />
+                        <DataGridTextColumn Header="Price per piece" Binding="{Binding Price, NotifyOnSourceUpdated=True}" Width="150"/>
+                        <DataGridTemplateColumn Header="Quantity" CellTemplate="{StaticResource CreateTransactionProductQuantityColumn}" MinWidth="200"/>
+                        <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, NotifyOnSourceUpdated=True}" MinWidth="150"/>
+                        <DataGridTemplateColumn CellTemplate="{StaticResource CreateTransactionProductActionsColumn}" MinWidth="150" />
 
                     </DataGrid.Columns>
                 </DataGrid>
@@ -50,7 +57,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="1" Content="Done" HorizontalAlignment="Right" VerticalAlignment="Center" Height="39" Width="115" Margin="0,0,0,0" Command="{Binding DoneCommand}" IsDefault="True"/>
-                    <Button Grid.Column="1" Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Center" Height="39" Width="115" Margin="0,0,128,0" Command="{Binding CancelCommand}"/>
+                    <Button Grid.Column="1" Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Center" Height="39" Width="115" Margin="0,0,128,0" Command="{Binding CancelCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -65,12 +72,13 @@
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
+                    
                     <TextBlock  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0,0,0,0"><Run Text="Barcode"/><Run Language="en-ph" Text=":"/></TextBlock>
-                    <TextBox x:Name="Barcode_TextBox" Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center"  VerticalContentAlignment="Center" FontSize="24" Width="221" Height="42" Margin="120,0,0,0"/>
+                    <TextBox x:Name="Barcode_TextBox" Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown"  HorizontalAlignment="Left"  Width="260" Margin="120,16,0,16" Style="{DynamicResource MaterialDesignFilledTextBox}"/>
 
                     <Grid Grid.Column="1" x:Name="CustomerNameInputGrid">
                         <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" Margin="0,0,256,0" Text="Customer Name"></TextBlock>
-                        <TextBox Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center"  VerticalContentAlignment="Center" FontSize="24" Width="221" Height="42"/>
+                        <TextBox Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" Width="221" Margin="0,16" Style="{DynamicResource MaterialDesignFilledTextBox}"/>
                     </Grid>
 
                 </Grid>

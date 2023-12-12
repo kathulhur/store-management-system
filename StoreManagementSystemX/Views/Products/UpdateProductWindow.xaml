@@ -5,7 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StoreManagementSystemX.Views.Products"
         mc:Ignorable="d"
-        Title="Update Product" Height="450" Width="512" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize">
+        Title="Update Product" Height="450" Width="512" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        
+        >
     <Border BorderThickness="2" BorderBrush="black">
         <Grid Margin="16">
             <Grid.RowDefinitions>
@@ -36,7 +45,7 @@
 
             </Grid>
                 <Button Content="Submit" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="92" Height="36" Command="{Binding SubmitCommand}"/>
-                <Button Content="Cancel" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="92" Height="36" Margin="0,0,112,0" Command="{Binding CancelCommand}"/>
+                <Button Content="Cancel" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="92" Height="36" Margin="0,0,112,0" Command="{Binding CancelCommand}" Style="{DynamicResource MaterialDesignFlatSecondaryButton}"/>
         </Grid>
     </Border>
 </Window>

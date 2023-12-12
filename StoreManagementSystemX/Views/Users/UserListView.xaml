@@ -8,17 +8,24 @@
              xmlns:userViewModelInterfaces="clr-namespace:StoreManagementSystemX.ViewModels.Users.Interfaces"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1280"
-             Foreground="{StaticResource #112D4E}">
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
     <UserControl.Resources>
         <DataTemplate x:Key="ActionsColumn" DataType="{x:Type userViewModelInterfaces:IUserRowViewModel}">
             <StackPanel Orientation="Horizontal">
-                <Button Content="Update" Command="{Binding UpdateCommand}"/>
+                <Button Content="Update" Command="{Binding UpdateCommand}" Margin="0,0,8,0"/>
                 <Button Content="Delete" Command="{Binding DeleteCommand}"/>
             </StackPanel>
         </DataTemplate>
         
     </UserControl.Resources>
-    <Border Background="{StaticResource #F9F7F7 }">
+    <Border>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
@@ -41,7 +48,7 @@
                 </Grid>
                 <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" x:Name="UserListGrid" Grid.Row="1" ItemsSource="{Binding Users}" Margin="16,16,16,16" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="250"/>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="275"/>
                         <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="*"/>
                         <DataGridTemplateColumn Header="Actions" CellTemplate="{StaticResource ActionsColumn}"/>
                     </DataGrid.Columns>

@@ -6,17 +6,24 @@
              xmlns:views="clr-namespace:StoreManagementSystemX.Views"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1280"
-             Foreground="{StaticResource #112D4E}"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+            TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+            TextElement.FontWeight="Regular"
+            TextElement.FontSize="14"
+            TextOptions.TextFormattingMode="Ideal"
+            TextOptions.TextRenderingMode="Auto"
+            Background="{DynamicResource MaterialDesignPaper}"
+            FontFamily="{DynamicResource MaterialDesignFont}"
              >
 
     <StackPanel>
-        <Button x:Name="DashboardButton" Content="Dashboard" Height="58" Click="Dashboard_Button_Click"/>
-        <Button x:Name="InventoryButton" Content="Inventory" Height="58" Click="Inventory_Button_Click"/>
-        <Button x:Name="TransactionsButton" Content="Transactions" Height="58" Click="Transactions_Button_Click"/>
-        <Button x:Name="PayLaterTransactionsButton" Content="Pay Later Transactions" Height="58" Click="Pay_Later_Transactions_Button_Click"/>
-        <Button x:Name="StockPurchasesButton" Content="Stock Purchases" Height="58" Click="Stock_Purchases_Button_Click"/>
-        <Button x:Name="UsersButton" Content="Users" Height="58" Click="Users_Button_Click"/>
-        <Button x:Name="LogoutButton" Content="Logout" Height="58" Click="Logout_Button_Click"/>
+        <Button x:Name="DashboardButton" Content="Dashboard" Height="58" Click="Dashboard_Button_Click" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
+        <Button x:Name="InventoryButton" Content="Inventory" Height="58" Click="Inventory_Button_Click" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
+        <Button x:Name="TransactionsButton" Content="Transactions" Height="58" Click="Transactions_Button_Click" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
+        <Button x:Name="PayLaterTransactionsButton" Content="Pay Later Transactions" Height="58" Click="Pay_Later_Transactions_Button_Click" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
+        <Button x:Name="StockPurchasesButton" Content="Stock Purchases" Height="58" Click="Stock_Purchases_Button_Click" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
+        <Button x:Name="UsersButton" Content="Users" Height="58" Click="Users_Button_Click" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
+        <Button x:Name="LogoutButton" Content="Logout" Height="58" Click="Logout_Button_Click" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
     </StackPanel>
 
 </UserControl>

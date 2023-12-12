@@ -20,6 +20,8 @@ namespace StoreManagementSystemX.ViewModels
         {
             Context dbContext = new Context();
 
+            var barcodeGeneratorService = new BarcodeGeneratorService(new ProductRepository(new Context()));
+            Console.Write("barcode: " + barcodeGeneratorService.GenerateBarcode());
             var dialogService = new DialogService();
             var unitOfWorkFactory = new UnitOfWorkFactory();
             AuthenticationService = new AuthenticationService(dialogService);

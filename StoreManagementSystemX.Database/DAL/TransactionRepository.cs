@@ -10,68 +10,22 @@ using System.Threading.Tasks;
 
 namespace StoreManagementSystemX.Database.DAL
 {
-    public class TransactionRepository : ITransactionRepository, IDisposable
+    public class TransactionRepository : BaseRepository<Transaction>, ITransactionRepository
     {
 
-        public TransactionRepository(Context context)
+        public TransactionRepository(Context context) : base(context) { }
+
+        public Transaction? GetById(Guid transactionId, string includeProperties = "")
         {
-            _context = context;
-        }
+            IQueryable<Transaction> query = _dbSet;
 
-        private readonly Context _context;
-
-        public void Delete(Guid instanceId)
-        {
-            Transaction transaction = _context.Transactions.Find(instanceId);
-            _context.Transactions.Remove(transaction);
-        }
-
-
-        public IEnumerable<Transaction> GetAll()
-        {
-            return _context.Transactions.Include(t => t.TransactionProducts).Include(e => e.PayLater).ToList();
-        }
-
-        public Transaction? GetById(Guid transactionId)
-        {
-            return _context.Transactions.Include(t => t.TransactionProducts).FirstOrDefault(t => t.Id == transactionId);
-        }
-
-        public void Insert(Transaction transaction)
-        {
-            _context.Transactions.Add(transaction);
-        }
-
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
-
-
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
+            foreach(var property in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
+                query = query.Include(property);
             }
-            disposed = true;
-        }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            var result = query.Where(t => t.Id == transactionId).FirstOrDefault();
+            return result;
         }
-
-        public IEnumerable<Transaction> Find(Expression<Func<Transaction, bool>> predicate)
-        {
-            return _context.Transactions.Where(predicate).Include(t => t.TransactionProducts).Include(e => e.PayLater).ToList();
-        }
-
     }
 }

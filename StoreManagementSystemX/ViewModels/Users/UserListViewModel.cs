@@ -30,7 +30,7 @@ namespace StoreManagementSystemX.ViewModels.Users
 
             using (var unitOfWork = unitOfWorkFactory.CreateUnitOfWork())
             {
-                foreach (var user in unitOfWork.UserRepository.GetAll())
+                foreach (var user in unitOfWork.UserRepository.Get())
                 {
                     AddUser(user);
                 }

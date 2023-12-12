@@ -7,8 +7,6 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow"
-        AllowsTransparency="True"
-        Background="Transparent"
         WindowStyle="None"
     >
 

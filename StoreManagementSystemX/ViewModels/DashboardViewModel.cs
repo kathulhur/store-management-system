@@ -28,7 +28,7 @@ namespace StoreManagementSystemX.ViewModels
             TransactionsToday = new ObservableCollection<ITransactionRowViewModel>();
             using(var unitOfWork = unitOfWorkFactory.CreateUnitOfWork())
             {
-                var transactions = unitOfWork.TransactionRepository.GetAll().Where(t => t.DateTime.Date == DateTime.Now.Date).OrderByDescending(e => e.DateTime);
+                var transactions = unitOfWork.TransactionRepository.Get(t => t.DateTime.Date == DateTime.Now.Date, t => t.OrderByDescending(e => e.DateTime), "TransactionProducts");
                 foreach (var transaction in transactions)
                 {
                     TransactionsToday.Add(new TransactionRowViewModel(unitOfWorkFactory, _dialogService, transaction));
@@ -115,7 +115,7 @@ namespace StoreManagementSystemX.ViewModels
             {
                 using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
-                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid) newTransactionId);
+                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid) newTransactionId, "TransactionProducts,TransactionProducts.Product");
                     if(newTransaction != null)
                     {
                         TransactionsToday.Insert(0, new TransactionRowViewModel(_unitOfWorkFactory, _dialogService, newTransaction));

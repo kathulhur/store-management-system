@@ -15,7 +15,7 @@ using var unitOfWork = new UnitOfWork();
 
 // Read data
 Console.WriteLine("Querying for a user");
-var users = unitOfWork.UserRepository.GetAll();
+var users = unitOfWork.UserRepository.Get();
 
 
 foreach (var user in users)
@@ -24,7 +24,7 @@ foreach (var user in users)
 }
 
 
-var products = unitOfWork.ProductRepository.GetAll();
+var products = unitOfWork.ProductRepository.Get();
 
 foreach(var product in products)
 {
@@ -33,7 +33,7 @@ foreach(var product in products)
 }
 
 
-var transactions = unitOfWork.TransactionRepository.GetAll();
+var transactions = unitOfWork.TransactionRepository.Get();
 
 foreach (var transaction in transactions)
 {
@@ -41,14 +41,14 @@ foreach (var transaction in transactions)
 }
 
 
-var transactionProducts = unitOfWork.TransactionProductRepository.GetAll();
+var transactionProducts = unitOfWork.TransactionProductRepository.Get();
 
 foreach(var transactionProduct in transactionProducts)
 {
     Console.WriteLine(transactionProduct);
 }
 
-var stockPurchases = unitOfWork.StockPurchaseRepository.GetAll();
+var stockPurchases = unitOfWork.StockPurchaseRepository.Get();
 
 foreach (var stockPurchase in stockPurchases)
 {
@@ -58,7 +58,7 @@ foreach (var stockPurchase in stockPurchases)
 unitOfWork.StockPurchaseRepository.Insert(new StockPurchase { MadeById = users.First().Id, DateTime = DateTime.Now });
 
 Console.WriteLine("Tests");
-stockPurchases = unitOfWork.StockPurchaseRepository.GetAll();
+stockPurchases = unitOfWork.StockPurchaseRepository.Get();
 unitOfWork.Save();
 
 foreach (var stockPurchase in stockPurchases)

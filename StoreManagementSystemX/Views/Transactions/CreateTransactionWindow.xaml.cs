@@ -48,6 +48,8 @@ namespace StoreManagementSystemX.Views.Transactions
 
             }
 
+            Owner = Application.Current.MainWindow;
+
         }
 
         private readonly Action<TransactionRowViewModel> _onSave;

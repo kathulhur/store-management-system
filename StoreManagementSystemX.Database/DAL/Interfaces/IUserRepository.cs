@@ -8,10 +8,5 @@ using System.Threading.Tasks;
 
 namespace StoreManagementSystemX.Database.DAL.Interfaces
 {
-    public interface IUserRepository : IRepository<User>
-    {
-
-        public User? Find(Expression<Func<User, bool>> predicate);
-
-    }
+    public interface IUserRepository : IRepository<User> { }
 }

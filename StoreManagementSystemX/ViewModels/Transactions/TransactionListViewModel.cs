@@ -28,7 +28,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                foreach (var t in unitOfWork.TransactionRepository.GetAll().OrderByDescending(t => t.DateTime))
+                foreach (var t in unitOfWork.TransactionRepository.Get(null, t => t.OrderByDescending(t => t.DateTime), "TransactionProducts, PayLater"))
                 {
                     AddTransaction(t);
                 }
@@ -72,7 +72,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             {
                 using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
-                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid)newTransactionId);
+                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid)newTransactionId, "TransactionProducts,TransactionProducts.Product");
                     var newTransactionRow = new TransactionRowViewModel(_unitOfWorkFactory, _dialogService, newTransaction);
                     SubscribeToTransactionRowEvents(newTransactionRow);
                     Transactions.Insert(0, newTransactionRow);

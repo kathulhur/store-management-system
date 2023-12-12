@@ -14,9 +14,6 @@ namespace StoreManagementSystemX.Tests
 {
     public class UserListViewModelTests
     {
-        
-        
-
         private AuthContext GetAuthContext()
             => new AuthContext(new User());
 
@@ -38,7 +35,7 @@ namespace StoreManagementSystemX.Tests
             
             var unitOfWork = Substitute.For<IUnitOfWork>();
 
-            unitOfWork.UserRepository.GetAll().Returns(users);
+            unitOfWork.UserRepository.Get().Returns(users);
 
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
             var dialogService = Substitute.For<IDialogService>();
@@ -78,7 +75,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.UserRepository.GetAll().Returns(users);
+            unitOfWork.UserRepository.Get().Returns(users);
             unitOfWork.UserRepository.GetById(newUserId).Returns(newUser);
 
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);

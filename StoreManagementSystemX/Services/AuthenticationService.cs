@@ -26,7 +26,7 @@ namespace StoreManagementSystemX.Services
 
         public void Login(string username, string password)
         {
-            var storedUser = _unitOfWork.UserRepository.Find(u => u.Username == username && u.Password == password);
+            var storedUser = _unitOfWork.UserRepository.Get(u => u.Username == username && u.Password == password).FirstOrDefault();
             if(storedUser != null)
             {
                 AuthContext = new AuthContext(storedUser);

@@ -27,6 +27,7 @@ namespace StoreManagementSystemX.Views.Users
         public CreateUserWindow(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, Action<Guid> onCreate)
         {
             InitializeComponent();
+            this.Owner = Application.Current.MainWindow;
 
             _viewModel = new CreateUserViewModel(authContext, unitOfWorkFactory, onCreate, () =>
             {

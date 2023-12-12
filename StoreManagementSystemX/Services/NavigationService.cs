@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using StoreManagementSystemX.Database;
 using StoreManagementSystemX.Database.DAL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
@@ -31,13 +32,17 @@ namespace StoreManagementSystemX.Services
             _unitOfWorkFactory = unitOfWorkFactory;
             _dialogService = dialogService;
             _productUpdateService = new ProductUpdateService(_unitOfWorkFactory);
-            _productCreationService = new ProductCreationService(_unitOfWorkFactory);
+            _barcodeGeneratorService = new BarcodeGeneratorService(new ProductRepository(new Context()));
+            _barcodeImageService = new BarcodeImageService();
+            _productCreationService = new ProductCreationService(_unitOfWorkFactory, _barcodeGeneratorService, _barcodeImageService);
             _userCreationService = new UserCreationService(_unitOfWorkFactory);
             _stockPurchaseCreationService = new StockPurchaseCreationService(_unitOfWorkFactory, _dialogService);
             _transactionCreationService = new TransactionCreationService(_unitOfWorkFactory, _dialogService);
 
         }
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly IBarcodeGeneratorService _barcodeGeneratorService;
+        private readonly IBarcodeImageService _barcodeImageService;
         private readonly IDialogService _dialogService;
         private readonly ProductUpdateService _productUpdateService;
         private readonly ProductCreationService _productCreationService;
@@ -72,7 +77,7 @@ namespace StoreManagementSystemX.Services
             else if (view == View.Inventory && _authenticationService.AuthContext != null)
             {
 
-                CurrentViewModel = new InventoryViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _productUpdateService, _productCreationService);
+                CurrentViewModel = new InventoryViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _productUpdateService, _productCreationService, _barcodeImageService);
             }
             else if (view == View.Transactions && _authenticationService.AuthContext != null)
             {

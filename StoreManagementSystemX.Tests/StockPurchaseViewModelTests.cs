@@ -35,7 +35,7 @@ namespace StoreManagementSystemX.Tests
             };
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(stockPurchases);
+            unitOfWork.StockPurchaseRepository.Get().Returns(stockPurchases);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
             var authContext = GetAuthContext();
             var dialogService = Substitute.For<IDialogService>();
@@ -66,7 +66,7 @@ namespace StoreManagementSystemX.Tests
             };
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(stockPurchases);
+            unitOfWork.StockPurchaseRepository.Get().Returns(stockPurchases);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
             var authContext = GetAuthContext();
             var dialogService = Substitute.For<IDialogService>();
@@ -99,7 +99,7 @@ namespace StoreManagementSystemX.Tests
             };
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(stockPurchases);
+            unitOfWork.StockPurchaseRepository.Get().Returns(stockPurchases);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
             var authContext = GetAuthContext();
             var dialogService = Substitute.For<IDialogService>();
@@ -126,7 +126,7 @@ namespace StoreManagementSystemX.Tests
             var stockPurchases = new List<StockPurchase>();
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(stockPurchases);
+            unitOfWork.StockPurchaseRepository.Get().Returns(stockPurchases);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
             var authContext = GetAuthContext();
             var dialogService = Substitute.For<IDialogService>();
@@ -160,7 +160,7 @@ namespace StoreManagementSystemX.Tests
             };
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(stockPurchases);
+            unitOfWork.StockPurchaseRepository.Get().Returns(stockPurchases);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var authContext = GetAuthContext();
@@ -205,7 +205,7 @@ namespace StoreManagementSystemX.Tests
             };
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(stockPurchases);
+            unitOfWork.StockPurchaseRepository.Get().Returns(stockPurchases);
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
             var authContext = GetAuthContext();
@@ -248,7 +248,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(new List<StockPurchase>());
+            unitOfWork.StockPurchaseRepository.Get().Returns(new List<StockPurchase>());
             unitOfWork.StockPurchaseRepository.GetById(newStockPurchase.Id).Returns(new StockPurchase { Id = newStockPurchase.Id });
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 
@@ -289,7 +289,7 @@ namespace StoreManagementSystemX.Tests
 
             var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
             var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.StockPurchaseRepository.GetAll().Returns(new List<StockPurchase>());
+            unitOfWork.StockPurchaseRepository.Get().Returns(new List<StockPurchase>());
             unitOfWork.StockPurchaseRepository.GetById(newStockPurchase.Id).Returns(new StockPurchase { Id = newStockPurchase.Id });
             unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
 

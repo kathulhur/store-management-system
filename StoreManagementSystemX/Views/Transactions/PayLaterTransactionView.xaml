@@ -6,16 +6,26 @@
              xmlns:views="clr-namespace:StoreManagementSystemX.Views"
              xmlns:transactionsViewModels="clr-namespace:StoreManagementSystemX.ViewModels.Transactions"
              mc:Ignorable="d" 
-             MinWidth="1280" MinHeight="720" Foreground="{StaticResource #112D4E}">
+             MinWidth="1280" MinHeight="720"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             
+             >
     <UserControl.Resources>
         <DataTemplate x:Key="ActionsColumn" DataType="{x:Type transactionsViewModels:PayLaterTransactionRowViewModel}">
             <StackPanel>
-                <Button Content="Mark as Paid" Command="{Binding MarkAsPaidCommand}"/>
+                <Button Content="Mark as Paid" Command="{Binding MarkAsPaidCommand}" Style="{DynamicResource MaterialDesignOutlinedButton}"/>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
     
-    <Border Background="{StaticResource #F9F7F7 }">
+    <Border>
         
     <Grid>
         <Grid.ColumnDefinitions>
@@ -36,12 +46,12 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid Margin="0,0,16,0"  x:Name="transactionsGrid" SelectedItem="{Binding SelectedTransaction}"  ItemsSource="{Binding Transactions}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid Margin="0,0,16,0"  x:Name="transactionsGrid" d:ItemsSource="{d:SampleData ItemCount=5}" SelectedItem="{Binding SelectedTransaction}"  ItemsSource="{Binding Transactions}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Date" Binding="{Binding DateTime, StringFormat=f}" Width="250"/>
                             <DataGridTextColumn Header="Total Amount" Binding="{Binding TotalSales}"/>
                             <DataGridTextColumn Header="Customer Name" Binding="{Binding CustomerName}" Width="*"/>
-                            <DataGridTemplateColumn Header="Actions" CellTemplate="{StaticResource ActionsColumn}" MaxWidth="100" Width="*"/>
+                            <DataGridTemplateColumn Header="Actions" CellTemplate="{StaticResource ActionsColumn}" Width="150"/>
                         </DataGrid.Columns>
                     </DataGrid>
 

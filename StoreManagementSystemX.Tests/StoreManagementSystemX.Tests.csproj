@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StoreManagementSystemX\StoreManagementSystemX.csproj" />
+    <ProjectReference Include="..\StoreManagementX.Domain\StoreManagementSystemX.Domain.csproj" />
   </ItemGroup>
 
 </Project>

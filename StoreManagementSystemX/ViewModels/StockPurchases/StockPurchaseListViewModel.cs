@@ -25,7 +25,7 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 
             using(var unitOfWork = unitOfWorkFactory.CreateUnitOfWork())
             {
-                foreach(var stockPurchase in unitOfWork.StockPurchaseRepository.GetAll().OrderByDescending(e => e.DateTime))
+                foreach(var stockPurchase in unitOfWork.StockPurchaseRepository.Get(null, sp => sp.OrderByDescending(e => e.DateTime), "StockPurchaseProducts, StockPurchaseProducts.Product"))
                 {
                     StockPurchases.Add(new StockPurchaseViewModel(stockPurchase));
                 }
@@ -63,13 +63,12 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
                 {
                     if(newStockPurchaseId != null)
                     {
-                        var newStockPurchase = unitOfWork.StockPurchaseRepository.GetById((Guid)newStockPurchaseId);
+                        var newStockPurchase = unitOfWork.StockPurchaseRepository.GetById((Guid)newStockPurchaseId, "StockPurchaseProducts, StockPurchaseProducts.Product");
                         if(newStockPurchase != null)
                         {
                             AddStockPurchase(newStockPurchase);
                         }
                     }
-
                 }
             }
         }

@@ -8,41 +8,13 @@ using System.Threading.Tasks;
 
 namespace StoreManagementSystemX.Database.DAL
 {
-    public class PayLaterRepository : IPayLaterRepository
+    public class PayLaterRepository : BaseRepository<PayLater>, IPayLaterRepository
     {
 
-        public PayLaterRepository(Context context)
-        {
-            _context = context;
-        }
+        public PayLaterRepository(Context context) : base(context) { }
 
-        private readonly Context _context;
 
-        public void Delete(Guid instanceId)
-        {
-            PayLater payLater = _context.PayLaters.Find(instanceId);
-            _context.PayLaters.Remove(payLater);
-        }
 
-        public IEnumerable<PayLater> GetAll()
-        {
-            return _context.PayLaters.ToList();
-        }
-
-        public PayLater? GetById(Guid instanceId)
-        {
-            return _context.PayLaters.Find(instanceId);
-        }
-
-        public void Insert(PayLater newInstance)
-        {
-            _context.PayLaters.Add(newInstance);
-        }
-
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
 
     }
 }
