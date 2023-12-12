@@ -20,12 +20,12 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Users
     public class User : IUser
     {
 
-        internal User(Guid creatorId, Guid id, string username, string password, UserFactory userFactory, ProductFactory productFactory, TransactionFactory transactionFactory, StockPurchaseFactory stockPurchaseFactory)
+        internal User(Guid creatorId, Guid id, string username, string password, IUserFactory userFactory, IProductFactory productFactory, ITransactionFactory transactionFactory, IStockPurchaseFactory stockPurchaseFactory)
         {
             CreatorId = creatorId;
             Id = id;
             Username = username;
-            _password = password;
+            Password = password;
             UserFactory = userFactory;
             ProductFactory = productFactory;
             TransactionFactory = transactionFactory;
@@ -46,16 +46,16 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Users
 
         public IStockPurchaseFactory StockPurchaseFactory { get; internal set; }
 
-        private string _password;
+        internal string Password;
 
         public void ChangePassword(string password)
         {
-            _password = password;
+            Password = password;
         }
 
 
         public override string ToString()
-            => $"Created By: {CreatorId} - ID: {Id} - Username: {Username} - Password: {_password}";
+            => $"Created By: {CreatorId} - ID: {Id} - Username: {Username} - Password: {Password}";
 
 
         public override bool Equals(object? obj)

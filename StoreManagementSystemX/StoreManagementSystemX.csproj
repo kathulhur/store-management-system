@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StoreManagementSystemX.Database\StoreManagementSystemX.Database.csproj" />
+    <ProjectReference Include="..\StoreManagementX.Domain\StoreManagementSystemX.Domain.csproj" />
   </ItemGroup>
 
 </Project>

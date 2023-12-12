@@ -5,9 +5,11 @@ using StoreManagementSystemX.Domain.Factories.Transactions;
 using StoreManagementSystemX.Domain.Factories.Users;
 using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
 
+var productFactory = new ProductFactory();
+var transactionFactory = new TransactionFactory();
+var stockPurchaseFactory = new StockPurchaseFactory();
 
-IUserFactory userFactory = new UserFactory();
-
+IUserFactory userFactory = new UserFactory(productFactory, transactionFactory, stockPurchaseFactory);
 
 var newUser = userFactory.Create(new UserViewModel { Username = "hello", Password = "world" });
 var newUser1 = newUser.UserFactory.Create(new UserViewModel { CreatorId = newUser.Id, Username = "username", Password = "password" });

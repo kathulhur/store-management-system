@@ -1,5 +1,12 @@
 ﻿using StoreManagementSystemX.Database;
 using StoreManagementSystemX.Database.DAL;
+using StoreManagementSystemX.Domain.Factories.Products;
+using StoreManagementSystemX.Domain.Factories.StockPurchases;
+using StoreManagementSystemX.Domain.Factories.Transactions;
+using StoreManagementSystemX.Domain.Factories.Users;
+using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Users;
+using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels;
@@ -21,19 +28,41 @@ namespace StoreManagementSystemX.ViewModels
             Context dbContext = new Context();
 
             var barcodeGeneratorService = new BarcodeGeneratorService(new ProductRepository(new Context()));
-            Console.Write("barcode: " + barcodeGeneratorService.GenerateBarcode());
             var dialogService = new DialogService();
             var unitOfWorkFactory = new UnitOfWorkFactory();
-            AuthenticationService = new AuthenticationService(dialogService);
+
+            var productFactory = new ProductFactory();
+            var transactionFactory = new TransactionFactory();
+            var stockPurchaseFactory = new StockPurchaseFactory();
+            var userFactory = new Domain.Factories.Users.UserFactory(productFactory, transactionFactory, stockPurchaseFactory);
+
+            IUserRepository userRepository = new Domain.Repositories.Users.UserRepository(userFactory);
+            var admin = userFactory.Create(new CreateUserArgs { CreatorId = Guid.NewGuid(), Username = "admin", Password = "password" });
+            userRepository.Add(admin);
+            AuthenticationService = new AuthenticationService(userRepository, dialogService);
             LoginViewModel loginViewModel = new LoginViewModel(AuthenticationService, dialogService);
-            NavigationService = new NavigationService(loginViewModel, unitOfWorkFactory, AuthenticationService, dialogService);
+
+            NavigationService = new NavigationService(
+                loginViewModel, 
+                unitOfWorkFactory, 
+                AuthenticationService, 
+                dialogService
+            );
         }
-        
+
+        private class CreateUserArgs : ICreateUserArgs
+        {
+            public Guid CreatorId { get; set; }
+
+            public string Username { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+        }
+
         public INavigationService NavigationService { get; }
         public IAuthenticationService AuthenticationService { get; }
         private readonly ProductRepository _productRepository;
         private readonly TransactionRepository _transactionRepository;
-        private readonly UserRepository _userRepository;
+        private readonly Database.DAL.UserRepository _userRepository;
 
     }
 }

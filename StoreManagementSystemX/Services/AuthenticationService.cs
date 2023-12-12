@@ -1,4 +1,6 @@
 ﻿using StoreManagementSystemX.Database.DAL;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,12 +12,12 @@ namespace StoreManagementSystemX.Services
 {
     class AuthenticationService : IAuthenticationService
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
 
 
-        public AuthenticationService(IDialogService dialogService)
+        public AuthenticationService(IUserRepository userRepository, IDialogService dialogService)
         {
-            _unitOfWork = new UnitOfWork();
+            _userRepository = userRepository;
             _dialogService = dialogService;
             AuthContext = null;
         }
@@ -26,7 +28,8 @@ namespace StoreManagementSystemX.Services
 
         public void Login(string username, string password)
         {
-            var storedUser = _unitOfWork.UserRepository.Get(u => u.Username == username && u.Password == password).FirstOrDefault();
+            var storedUser = _userRepository.GetByUsernameAndPassword(username, password);
+
             if(storedUser != null)
             {
                 AuthContext = new AuthContext(storedUser);

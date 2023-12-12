@@ -2,16 +2,16 @@
 using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
 using StoreManagementSystemX.Domain.Factories.Users;
 using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
-using StoreManagementSystemX.Domain.Repositories.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StoreManagementSystemX.Domain.Repositories
+namespace StoreManagementSystemX.Domain.Repositories.Users
 {
-    public class UserRepository : IRepository<IUser>
+    public class UserRepository : IUserRepository
     {
         private readonly List<User> _users;
 
@@ -56,6 +56,11 @@ namespace StoreManagementSystemX.Domain.Repositories
                 _users[matchedUserIndex] = userToUpdate;
 
             }
+        }
+
+        public IUser? GetByUsernameAndPassword(string username, string password)
+        {
+            return _users.Find(u => u.Username == username && u.Password == password);
         }
 
         private class CreateUserArgs : ICreateUserArgs

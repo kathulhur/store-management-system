@@ -1,5 +1,6 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using System;
@@ -12,7 +13,7 @@ namespace StoreManagementSystemX.Services
 {
     public class AuthContext
     {
-        public AuthContext(User authenticatedUser)
+        public AuthContext(IUser authenticatedUser)
         {
             CurrentUser = new AuthUser(authenticatedUser);
         }
@@ -21,12 +22,12 @@ namespace StoreManagementSystemX.Services
 
         public class AuthUser
         {
-            public AuthUser(User user) 
+            public AuthUser(IUser user) 
             {
                 _user = user;
             }
 
-            private readonly User _user;
+            private readonly IUser _user;
 
             public Guid Id => _user.Id;
         }
