@@ -1,5 +1,6 @@
 ﻿using SQLitePCL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.Views.Products;
 using System;
@@ -12,25 +13,22 @@ namespace StoreManagementSystemX.Services
 {
     public class ProductUpdateService : IProductUpdateService
     {
-        public ProductUpdateService(IUnitOfWorkFactory unitOfWorkFactory)
+        public ProductUpdateService(Domain.Repositories.Products.Interfaces.IProductRepository productRepository)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _productRepoisitory = productRepository;
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.Products.Interfaces.IProductRepository _productRepoisitory;
 
         public ProductUpdateServiceResponse UpdateProduct(Guid productId)
         {
             ProductUpdateServiceResponse response = ProductUpdateServiceResponse.Failed;
 
-            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            var window = new UpdateProductWindow(productId, _productRepoisitory, (ProductUpdateServiceResponse status) =>
             {
-                var window = new UpdateProductWindow(productId, unitOfWork, (ProductUpdateServiceResponse status) =>
-                {
-                    response = status;
-                });
-                window.ShowDialog();    
-            }
+                response = status;
+            });
+            window.ShowDialog();    
 
 
             return response;

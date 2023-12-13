@@ -5,6 +5,10 @@ using StoreManagementSystemX.Domain.Factories.Products;
 using StoreManagementSystemX.Domain.Factories.Products.Interfaces;
 using StoreManagementSystemX.Domain.Factories.StockPurchases;
 using StoreManagementSystemX.Domain.Factories.StockPurchases.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
+using StoreManagementSystemX.Domain.Services.Barcode.Interfaces;
+using StoreManagementSystemX.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +20,18 @@ namespace StoreManagementSystemX.Domain.Tests.Aggregates
     public class StockPurchaseTests
     {
 
-        private readonly IStockPurchaseFactory _stockPurchaseFactory = new StockPurchaseFactory();
-        private readonly IProductFactory _productFactory = new ProductFactory();
+        IStockPurchaseFactory _stockPurchaseFactory = new StockPurchaseFactory();
+
+
+        private IProductFactory CreateProductFactory()
+        {
+            
+            IProductRepository _productRepository = new ProductRepository();
+            IBarcodeGenerationService barcodeGenerationService = new BarcodeGenerationService(_productRepository);
+            IProductFactory _productFactory = new ProductFactory(barcodeGenerationService);
+
+            return _productFactory;
+        }
 
         private IStockPurchase CreateEmptyStockPurchase()
         {
@@ -32,7 +46,7 @@ namespace StoreManagementSystemX.Domain.Tests.Aggregates
         }
 
         private IProduct CreateProduct(string name, decimal costPrice, decimal sellingPrice, int inStock)
-            => _productFactory.Create(new CreateProductArgs { Name = name, CostPrice = costPrice, SellingPrice = sellingPrice, InStock = inStock, CreatorId = Guid.NewGuid() });
+            => CreateProductFactory().Create(new CreateProductArgs { Name = name, CostPrice = costPrice, SellingPrice = sellingPrice, InStock = inStock, CreatorId = Guid.NewGuid() });
 
         [Fact]
         public void Product_appears_on_transaction_upon_adding()
@@ -106,6 +120,8 @@ namespace StoreManagementSystemX.Domain.Tests.Aggregates
             public decimal SellingPrice { get; set; }
 
             public int InStock { get; set; }
+
+            public string? Barcode { get; set; }
         }
 
     }

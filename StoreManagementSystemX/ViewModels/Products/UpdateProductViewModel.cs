@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using StoreManagementSystemX.Domain.Factories.Products.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Products.Interfaces;
 using System;
@@ -16,22 +19,22 @@ namespace StoreManagementSystemX.ViewModels.Products
 {
     public class UpdateProductViewModel : ObservableObject, IUpdateProductViewModel
     {
-        public UpdateProductViewModel(Guid productId, IUnitOfWork unitOfWork, Action closeWindow, Action<ProductUpdateServiceResponse> onAction)
+        public UpdateProductViewModel(Guid productId, Domain.Repositories.Products.Interfaces.IProductRepository productRepository, Action closeWindow, Action<ProductUpdateServiceResponse> onAction)
         {
             CancelCommand = new RelayCommand(OnCancel);
             SubmitCommand = new RelayCommand(UpdateProduct);
             _closeWindow = closeWindow;
-            _unitOfWork = unitOfWork;
+            _productRepository = productRepository;
             _onAction = onAction;
             // TODO: show message box and close if product with `productId` doesn't exist
-            _product = _unitOfWork.ProductRepository.GetById(productId);
+            _product = _productRepository.GetById(productId);
 
         }
 
         private readonly Action _closeWindow;
         private readonly Action<ProductUpdateServiceResponse> _onAction;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly Product _product;
+        private readonly Domain.Repositories.Products.Interfaces.IProductRepository _productRepository;
+        private readonly IProduct _product;
 
         public string Name { get => _product.Name; set => SetProperty(_product.Name, value, _product, (u, n) => u.Name = n); }
 
@@ -52,7 +55,7 @@ namespace StoreManagementSystemX.ViewModels.Products
 
         public void UpdateProduct()
         {
-            _unitOfWork.Save();
+            _productRepository.Update(_product);
             _onAction(ProductUpdateServiceResponse.Success);
             _closeWindow();
         }

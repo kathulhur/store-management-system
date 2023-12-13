@@ -1,4 +1,5 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.Views.Products;
 using System;
@@ -12,29 +13,25 @@ namespace StoreManagementSystemX.Services
     public class ProductCreationService : IProductCreationService
     {
         
-        public ProductCreationService(IUnitOfWorkFactory unitOfWorkFactory, IBarcodeGeneratorService barcodeGeneratorService, IBarcodeImageService barcodeImageService)
+        public ProductCreationService(Domain.Repositories.Products.Interfaces.IProductRepository productRepository, IBarcodeImageService barcodeImageService)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
-            _barcodeGeneratorService = barcodeGeneratorService;
+            _productRepository = productRepository;
             _barcodeImageService = barcodeImageService;
         }
 
+        private readonly Domain.Repositories.Products.Interfaces.IProductRepository _productRepository;
         private readonly IBarcodeImageService _barcodeImageService;
-        private readonly IBarcodeGeneratorService _barcodeGeneratorService;
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         public Guid? CreateNewProduct(AuthContext authContext)
         {
-            using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            Guid? newProductId = null;
+            var window = new CreateProductWindow(authContext, _productRepository, _barcodeImageService, (Guid Id) =>
             {
-                Guid? newProductId = null;
-                var window = new CreateProductWindow(authContext, unitOfWork, _barcodeGeneratorService, _barcodeImageService, (Guid Id) =>
-                {
-                    newProductId = Id;
-                });
-                window.ShowDialog();
+                newProductId = Id;
+            });
+            window.ShowDialog();
 
-                return newProductId;
-            }
+            return newProductId;
+            
         }
     }
 }

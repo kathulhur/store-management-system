@@ -6,15 +6,28 @@ using System.Text;
 using System.Threading.Tasks;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Products;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using StoreManagementSystemX.Domain.Services.Barcode.Interfaces;
 
 namespace StoreManagementSystemX.Domain.Factories.Products
 {
     public class ProductFactory : IProductFactory
     {
+        public ProductFactory(IBarcodeGenerationService barcodeGenerationService)
+        {
+            _barcodeGenerationService = barcodeGenerationService;
+        }
+
+        private readonly IBarcodeGenerationService _barcodeGenerationService;
 
         public IProduct Create(ICreateProductArgs args)
         {
-            return new Product(args.CreatorId, Guid.NewGuid(), args.Name, args.CostPrice, args.SellingPrice, args.InStock);
+            if (args.Barcode == null)
+            {
+                return new Product(args.CreatorId, Guid.NewGuid(), _barcodeGenerationService.GenerateBarcode(), args.Name, args.CostPrice, args.SellingPrice);
+            } else
+            {
+                return new Product(args.CreatorId, Guid.NewGuid(), args.Barcode, args.Name, args.CostPrice, args.SellingPrice);
+            }
         }
     }
 }

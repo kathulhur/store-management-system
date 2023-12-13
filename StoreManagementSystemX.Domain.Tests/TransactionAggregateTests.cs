@@ -5,6 +5,8 @@ using StoreManagementSystemX.Domain.Factories.Products;
 using StoreManagementSystemX.Domain.Factories.Products.Interfaces;
 using StoreManagementSystemX.Domain.Factories.Transactions;
 using StoreManagementSystemX.Domain.Factories.Transactions.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products;
+using StoreManagementSystemX.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace StoreManagementSystemX.Domain.Tests
     {
 
         private readonly ITransactionFactory _transactionFactory = new TransactionFactory();
-        private readonly IProductFactory _productFactory = new ProductFactory();
+        private readonly IProductFactory _productFactory = new ProductFactory(new BarcodeGenerationService(new ProductRepository()));
 
         private ITransaction CreateEmptyTransaction()
         {
@@ -106,6 +108,8 @@ namespace StoreManagementSystemX.Domain.Tests
             public decimal SellingPrice { get; set; }
 
             public int InStock { get; set; }
+
+            public string? Barcode { get; set; }
         }
 
     }

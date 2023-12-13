@@ -15,21 +15,11 @@ namespace StoreManagementSystemX.Services
     {
         public AuthContext(IUser authenticatedUser)
         {
-            CurrentUser = new AuthUser(authenticatedUser);
+            CurrentUser = authenticatedUser;
         }
 
-        public AuthUser CurrentUser { get; }
+        public IUser CurrentUser { get; }
 
-        public class AuthUser
-        {
-            public AuthUser(IUser user) 
-            {
-                _user = user;
-            }
 
-            private readonly IUser _user;
-
-            public Guid Id => _user.Id;
-        }
     }
 }

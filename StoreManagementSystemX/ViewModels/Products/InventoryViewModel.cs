@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SQLitePCL;
-using StoreManagementSystemX.Database.DAL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using StoreManagementSystemX.Domain.Repositories;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Interfaces;
@@ -25,24 +26,20 @@ namespace StoreManagementSystemX.ViewModels.Products
 {
     public class InventoryViewModel : BaseViewModel, IInventoryViewModel
     {
-        public InventoryViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, IProductUpdateService productUpdateService, IProductCreationService productCreationService, IBarcodeImageService barcodeImageService)
+        public InventoryViewModel(AuthContext authContext, IProductRepository productRepository, IDialogService dialogService, IProductUpdateService productUpdateService, IProductCreationService productCreationService, IBarcodeImageService barcodeImageService)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
             _authContext = authContext;
             _dialogService = dialogService;
             _productUpdateService = productUpdateService;
             _productCreationService = productCreationService;
             _barcodeImageService = barcodeImageService;
+            _productRepository = productRepository;
 
             Products = new ObservableCollection<IProductRow>();
-            using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            
+            foreach (IProduct p in productRepository.GetAll())
             {
-
-                foreach (Product p in unitOfWork.ProductRepository.Get())
-                {
-                    AddProductToList(p);
-                }
-
+                AddProductToList(p);
             }
 
             AddProductCommand = new RelayCommand(AddProductCommandHandler);
@@ -53,7 +50,7 @@ namespace StoreManagementSystemX.ViewModels.Products
 
         private readonly IProductUpdateService _productUpdateService;
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly IProductRepository _productRepository;
 
         private AuthContext _authContext { get; }
 
@@ -70,24 +67,21 @@ namespace StoreManagementSystemX.ViewModels.Products
             var newProductId = _productCreationService.CreateNewProduct(_authContext);
             if (newProductId != null && newProductId.HasValue)
             {
-                using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                
+                var newProduct = _productRepository.GetById((Guid)newProductId);
+                if (newProduct != null)
                 {
-                    var newProduct = unitOfWork.ProductRepository.GetById((Guid)newProductId);
-                    if (newProduct != null)
-                    {
-                        AddNewlyCreatedProduct(newProduct);
-                    }
-
+                    AddNewlyCreatedProduct(newProduct);
                 }
             }
         }
 
-        private void AddNewlyCreatedProduct(Product newProduct)
+        private void AddNewlyCreatedProduct(IProduct newProduct)
         {
             AddProductToList(newProduct);
         }
 
-        private void AddProductToList(Product product)
+        private void AddProductToList(IProduct product)
         {
 
             var productRow = new ProductRow(this, product);
@@ -117,7 +111,7 @@ namespace StoreManagementSystemX.ViewModels.Products
         {
             InventoryViewModel _parent;
 
-            public ProductRow(InventoryViewModel parent, Product product)
+            public ProductRow(InventoryViewModel parent, IProduct product)
             {
                 _parent = parent;
                 _product = product;
@@ -126,7 +120,7 @@ namespace StoreManagementSystemX.ViewModels.Products
                 BarcodeImage = _parent._barcodeImageService.GenerateBarcodeImage(product.Barcode);
             }
 
-            private Product _product;
+            private IProduct _product;
 
             public Guid Id => _product.Id;
 
@@ -148,9 +142,10 @@ namespace StoreManagementSystemX.ViewModels.Products
                 var updateStatus = _parent._productUpdateService.UpdateProduct(_product.Id);
                 if (updateStatus == ProductUpdateServiceResponse.Success)
                 {
-                    using(var unitOfWork = _parent._unitOfWorkFactory.CreateUnitOfWork())
+                    var updatedProduct = _parent._productRepository.GetById(_product.Id);
+                    if(_product != null)
                     {
-                        _product = unitOfWork.ProductRepository.GetById(_product.Id);
+                        _product = updatedProduct;
                         NotifyPropertiesChanged();
                     }
                 }
@@ -175,12 +170,8 @@ namespace StoreManagementSystemX.ViewModels.Products
             {
                 if (_parent._dialogService.ShowConfirmationDialog("Confirm Delete", "Are you sure you want to delete this product?"))
                 {
-                    using(var unitOfWork = _parent._unitOfWorkFactory.CreateUnitOfWork())
-                    {
-                        unitOfWork.ProductRepository.Delete(_product.Id);
-                        unitOfWork.Save();
-                        OnProductDeleted(new EventArgs<IProductRow>(this));
-                    } 
+                        _parent._productRepository.Remove(_product.Id);
+                    OnProductDeleted(new EventArgs<IProductRow>(this));
                 }
 
             }

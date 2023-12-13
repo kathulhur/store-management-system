@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace StoreManagementSystemX.Services.Interfaces
+namespace StoreManagementSystemX.Services
 {
     public interface IBarcodeImageService
     {

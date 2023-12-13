@@ -1,4 +1,5 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Products;
@@ -24,10 +25,10 @@ namespace StoreManagementSystemX.Views.Products
     public partial class CreateProductWindow : Window
     {
 
-        public CreateProductWindow(AuthContext authContext, IUnitOfWork unitOfWork, IBarcodeGeneratorService barcodeGeneratorService, IBarcodeImageService barcodeImageService, Action<Guid> onSubmit)
+        public CreateProductWindow(AuthContext authContext, Domain.Repositories.Products.Interfaces.IProductRepository productRepository, IBarcodeImageService barcodeImageService, Action<Guid> onSubmit)
         {
             InitializeComponent();
-            this.DataContext = new CreateProductViewModel(authContext, unitOfWork, barcodeGeneratorService, barcodeImageService, onSubmit, () =>
+            this.DataContext = new CreateProductViewModel(authContext, productRepository, barcodeImageService, onSubmit, () =>
             {
                 Close();
             });

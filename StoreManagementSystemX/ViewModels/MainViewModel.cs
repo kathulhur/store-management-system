@@ -5,6 +5,7 @@ using StoreManagementSystemX.Domain.Factories.StockPurchases;
 using StoreManagementSystemX.Domain.Factories.Transactions;
 using StoreManagementSystemX.Domain.Factories.Users;
 using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products;
 using StoreManagementSystemX.Domain.Repositories.Users;
 using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services;
@@ -27,11 +28,13 @@ namespace StoreManagementSystemX.ViewModels
         {
             Context dbContext = new Context();
 
-            var barcodeGeneratorService = new BarcodeGeneratorService(new ProductRepository(new Context()));
             var dialogService = new DialogService();
             var unitOfWorkFactory = new UnitOfWorkFactory();
 
-            var productFactory = new ProductFactory();
+            var productRepository = new Domain.Repositories.Products.ProductRepository();
+            var barcodeGenerationService = new BarcodeGenerationService(productRepository);
+            var productFactory = new ProductFactory(barcodeGenerationService);
+
             var transactionFactory = new TransactionFactory();
             var stockPurchaseFactory = new StockPurchaseFactory();
             var userFactory = new Domain.Factories.Users.UserFactory(productFactory, transactionFactory, stockPurchaseFactory);
@@ -46,7 +49,8 @@ namespace StoreManagementSystemX.ViewModels
                 loginViewModel, 
                 unitOfWorkFactory, 
                 AuthenticationService, 
-                dialogService
+                dialogService,
+                productRepository
             );
         }
 
@@ -60,7 +64,6 @@ namespace StoreManagementSystemX.ViewModels
 
         public INavigationService NavigationService { get; }
         public IAuthenticationService AuthenticationService { get; }
-        private readonly ProductRepository _productRepository;
         private readonly TransactionRepository _transactionRepository;
         private readonly Database.DAL.UserRepository _userRepository;
 

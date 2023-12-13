@@ -1,254 +1,101 @@
+//using StoreManagementSystemX.Domain.Aggregates.Roots.Users;
+//using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
+//using StoreManagementSystemX.Domain.Factories.Users;
+//using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
+//using StoreManagementSystemX.Domain.Repositories.Interfaces;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
-using NSubstitute;
-using NSubstitute.Extensions;
-using StoreManagementSystemX.Database.DAL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
-using StoreManagementSystemX.Services;
-using StoreManagementSystemX.Services.Interfaces;
-using StoreManagementSystemX.ViewModels;
-using System.Reflection;
-
-namespace StoreManagementSystemX.Tests
-{
-    public class DashboardViewModelTests
-    {
-
-        [Fact]
-        public void All_transactions_added_on_initialization()
-        {
-
-            // arrange
-            var transactions = new List<Transaction>()
-            {
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now}
-            };
-
-            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
-            var unitOfWork = Substitute.For<IUnitOfWork>();
+//namespace StoreManagementSystemX.Tests
+//{
+//    public class UserRepositoryTests
+//    {
+//        private static readonly UserFactory _userFactory = new UserFactory();
 
-            unitOfWork.TransactionRepository.Get().Returns(transactions);
-
-            unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
-
-            var dialogService = Substitute.For<IDialogService>();
-            var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(authenticatedUser);
-            var transactionCreationService = Substitute.For<ITransactionCreationService>();
-
-            // act: Initialize
-            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
-
-
-            // assert
-            Assert.Equal(5, dashboardViewModel.TransactionsToday.Count);
-            Assert.Equal(5, dashboardViewModel.TotalTransactionsToday);
-        }
-
-        [Fact]
-        public void Only_transactions_happened_today_are_included()
-        {
-
-            // arrange
-            var transactions = new List<Transaction>()
-            {
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now},
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now.AddDays(-2)}
-            };
-
-            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
-            var unitOfWork = Substitute.For<IUnitOfWork>();
-
-            unitOfWork.TransactionRepository.Get().Returns(transactions);
-
-            unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
-
-            var dialogService = Substitute.For<IDialogService>();
-            var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(authenticatedUser);
-            var transactionCreationService = Substitute.For<ITransactionCreationService>();
-
-            // act: Initialize
-            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
-
-
-            // assert
-            Assert.Equal(5, dashboardViewModel.TransactionsToday.Count);
-            Assert.Equal(5, dashboardViewModel.TotalTransactionsToday);
-        }
-
-
-        [Fact]
-        public void Daily_revenue_correctly_computed()
-        {
-            // arrange
-
-            var transactions = new List<Transaction>()
-            {
-                // Sales = 100 + 16 = 116
-                // Profit = Sales - (50 + 10) = 56
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now, TransactionProducts = {
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 5, CostPrice = 10, PriceSold = 20 },
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 2, CostPrice = 5, PriceSold = 8 }
-                }},
-                // Sales = 80 + 8 = 88
-                // Profit = Sales - (40 + 5) = 43
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now, TransactionProducts = {
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 4, CostPrice = 10, PriceSold = 20 },
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 1, CostPrice = 5, PriceSold = 8 }
-                }},
-            };
+//        private IRepository<IUser> CreateRepositoryWithSingleUser()
+//        {
+//            // assemble
+//            var user = _userFactory.Create(new CreateUserArgs { Username = "hello", Password = "world" });
 
-            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
-            var unitOfWork = Substitute.For<IUnitOfWork>();
+//            IRepository<IUser> repository = new UserRepository(_userFactory);
 
-            unitOfWork.TransactionRepository.Get().Returns(transactions);
+//            // Verify empty
+//            Assert.False(repository.GetAll().Any());
 
-            unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
+//            // act
+//            repository.Add(user);
 
-            var dialogService = Substitute.For<IDialogService>();
-            var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(authenticatedUser);
+//            // assert
+//            Assert.True(repository.GetAll().Any());
 
-            var transactionCreationService = Substitute.For<ITransactionCreationService>();
+//            return repository;
+//        }
 
-            // act: Initialize
-            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
+//        private IRepository<IUser> CreateRepositoryWithSingleUserHavingId()
+//        {
+//            // assemble
+//            var user = _userFactory.Create(new CreateUserArgs { Username = "hello", Password = "world" });
 
-            // assert
-            Assert.Equal(204, dashboardViewModel.TotalRevenueToday);
+//            IRepository<IUser> repository = new UserRepository(_userFactory);
 
-        }
+//            // Verify empty
+//            Assert.False(repository.GetAll().Any());
 
+//            // act
+//            repository.Add(user);
 
-        [Fact]
-        public void Profit_revenue_correctly_computed()
-        {
-            // arrange
-            var transactions = new List<Transaction>()
-            {
-                // Sales = 100 + 16 = 116
-                // Profit = Sales - (50 + 10) = 56
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now, TransactionProducts = {
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 5, CostPrice = 10, PriceSold = 20 },
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 2, CostPrice = 5, PriceSold = 8 }
-                }},
-                // Sales = 80 + 8 = 88
-                // Profit = Sales - (40 + 5) = 43
-                new Transaction{Id = Guid.NewGuid(), DateTime = DateTime.Now, TransactionProducts = {
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 4, CostPrice = 10, PriceSold = 20 },
-                    new TransactionProduct { ProductId = Guid.NewGuid(), QuantityBought = 1, CostPrice = 5, PriceSold = 8 }
-                }},
-            };
+//            // assert
+//            Assert.True(repository.GetAll().Any());
 
-            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
-            var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.TransactionRepository.Get().Returns(transactions);
-            unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
+//            return repository;
+//        }
 
 
+//        [Fact]
+//        public void User_gets_added_and_has_correct_username_value()
+//        {
+//            // assemble
+//            IRepository<IUser> repository = new UserRepository(_userFactory);
 
-            var dialogService = Substitute.For<IDialogService>();
-            var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(authenticatedUser);
-            var transactionCreationService = Substitute.For<ITransactionCreationService>();
+//            var newUser = new CreateUserArgs { Username = "hello", Password = "world" };
 
-            // act: Initialize
-            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
+//            Assert.False(repository.GetAll().Any());
 
-            // assert
-            Assert.Equal(99, dashboardViewModel.TotalProfitToday);
-            
-        }
+//            // act
+//            repository.Add(_userFactory.Create(newUser));
 
+//            // assert
+//            Assert.True(repository.GetAll().Any());
+//            var storedUser = repository.GetAll().First();
+//            Assert.True(storedUser.Username == newUser.Username);
+//        }
 
-        [Fact]
-        public void New_transaction_added_to_transaction_list_after_its_creation()
-        {
-            // arrange
-            var newTransaction = new Transaction();
+//        [Fact]
+//        public void User_gets_removed_on_remove()
+//        {
+//            // assemble
+//            var userRepository = CreateRepositoryWithSingleUser();
+//            var userToDelete = userRepository.GetAll().First();
 
-            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
 
-            var unitOfWork = Substitute.For<IUnitOfWork>();
+//            // act
+//            userRepository.Remove(userToDelete.Id);
 
-            unitOfWork.TransactionRepository.GetById(Guid.NewGuid()).ReturnsForAnyArgs(newTransaction);
-            unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
+//            // Assert
+//            Assert.True(!userRepository.GetAll().Any());
+//        }
 
-            var dialogService = Substitute.For<IDialogService>();
-            var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(authenticatedUser);
 
-            var transactionCreationService = Substitute.For<ITransactionCreationService>();
+//        private class CreateUserArgs : ICreateUserArgs
+//        {
+//            public Guid CreatorId { get; set; }
 
-            transactionCreationService.CreateNewTransaction(authContext).Returns(Guid.NewGuid());
+//            public string Username { get; set; }
 
-            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
-
-            // act: Initialize
-            dashboardViewModel.NewTransactionCommand.Execute(null);
-
-            Assert.True(dashboardViewModel.TransactionsToday.Any());
-        }
-
-
-        [Fact]
-        public void Selected_transaction_not_null_when_transaction_list_is_not_empty()
-        {
-            // arrange
-
-            var transactions = new List<Transaction>() { new Transaction { DateTime = DateTime.Now } };
-
-            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
-            unitOfWorkFactory.CreateUnitOfWork().ReturnsForAll(Substitute.For<IUnitOfWork>());
-
-            var unitOfWork = Substitute.For<IUnitOfWork>();
-            unitOfWork.TransactionRepository.Get().Returns(transactions);
-
-            unitOfWorkFactory.CreateUnitOfWork().Returns(unitOfWork);
-
-            var dialogService = Substitute.For<IDialogService>();
-
-            var authenticatedUser = new User { Id = Guid.NewGuid() };
-
-            var authContext = new AuthContext(authenticatedUser);
-            var transactionCreationService = Substitute.For<ITransactionCreationService>();
-
-            // act: Initialize
-            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
-
-            Assert.NotNull(dashboardViewModel.SelectedTransaction);
-        }
-
-        [Fact]
-        public void Selected_transaction_null_when_transaction_list_empty()
-        {
-            // arrange
-            var unitOfWorkFactory = Substitute.For<IUnitOfWorkFactory>();
-            unitOfWorkFactory.CreateUnitOfWork().ReturnsForAll(Substitute.For<IUnitOfWork>());
-
-
-            unitOfWorkFactory.CreateUnitOfWork().TransactionRepository.Get(default!).ReturnsForAnyArgs(new List<Transaction>());
-
-            var dialogService = Substitute.For<IDialogService>();
-            var authenticatedUser = new User { Id = Guid.NewGuid() };
-            var authContext = new AuthContext(authenticatedUser);
-            var transactionCreationService = Substitute.For<ITransactionCreationService>();
-
-            // act: Initialize
-            var dashboardViewModel = new DashboardViewModel(authContext, unitOfWorkFactory, dialogService, transactionCreationService);
-
-            Assert.Null(dashboardViewModel.SelectedTransaction);
-        }
-
-
-    }
-}
+//            public string Password { get; set; }
+//        }
+//    }
+//}

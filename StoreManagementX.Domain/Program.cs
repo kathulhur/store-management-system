@@ -4,8 +4,13 @@ using StoreManagementSystemX.Domain.Factories.StockPurchases;
 using StoreManagementSystemX.Domain.Factories.Transactions;
 using StoreManagementSystemX.Domain.Factories.Users;
 using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products;
+using StoreManagementSystemX.Domain.Services.Barcode.Interfaces;
+using StoreManagementSystemX.Services;
 
-var productFactory = new ProductFactory();
+var productRepository = new ProductRepository();
+var barcodeGenerationService = new BarcodeGenerationService(productRepository);
+var productFactory = new ProductFactory(barcodeGenerationService);
 var transactionFactory = new TransactionFactory();
 var stockPurchaseFactory = new StockPurchaseFactory();
 
@@ -101,6 +106,8 @@ class CreateProductViewModel : ICreateProductArgs
     public decimal SellingPrice { get; set; }
 
     public int InStock { get; set; }
+
+    public string? Barcode { get; set; }
 }
 
 

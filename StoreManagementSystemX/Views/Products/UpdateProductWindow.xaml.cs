@@ -1,4 +1,5 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Products;
 using System;
@@ -23,10 +24,10 @@ namespace StoreManagementSystemX.Views.Products
     /// </summary>
     public partial class UpdateProductWindow : Window
     {
-        public UpdateProductWindow(Guid productId, IUnitOfWork unitOfWork, Action<ProductUpdateServiceResponse> onAction)
+        public UpdateProductWindow(Guid productId, Domain.Repositories.Products.Interfaces.IProductRepository productRepoisitory, Action<ProductUpdateServiceResponse> onAction)
         {
             InitializeComponent();
-            DataContext = new UpdateProductViewModel(productId, unitOfWork, () =>
+            DataContext = new UpdateProductViewModel(productId, productRepoisitory, () =>
             {
                 Close();
             }, onAction);

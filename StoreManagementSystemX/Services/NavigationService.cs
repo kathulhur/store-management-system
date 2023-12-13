@@ -2,6 +2,7 @@
 using StoreManagementSystemX.Database;
 using StoreManagementSystemX.Database.DAL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels;
 using StoreManagementSystemX.ViewModels.Products;
@@ -24,24 +25,24 @@ namespace StoreManagementSystemX.Services
             BaseViewModel initialViewModel,
             IUnitOfWorkFactory unitOfWorkFactory,
             IAuthenticationService authenticationService,
-            IDialogService dialogService
+            IDialogService dialogService,
+            Domain.Repositories.Products.Interfaces.IProductRepository productRepository 
         )
         {
             _currentViewModel = initialViewModel;
             _authenticationService = authenticationService;
             _unitOfWorkFactory = unitOfWorkFactory;
             _dialogService = dialogService;
-            _productUpdateService = new ProductUpdateService(_unitOfWorkFactory);
-            _barcodeGeneratorService = new BarcodeGeneratorService(new ProductRepository(new Context()));
+            _productRepository = productRepository;
+            _productUpdateService = new ProductUpdateService(productRepository);
             _barcodeImageService = new BarcodeImageService();
-            _productCreationService = new ProductCreationService(_unitOfWorkFactory, _barcodeGeneratorService, _barcodeImageService);
+            _productCreationService = new ProductCreationService(_productRepository, _barcodeImageService);
             _userCreationService = new UserCreationService(_unitOfWorkFactory);
             _stockPurchaseCreationService = new StockPurchaseCreationService(_unitOfWorkFactory, _dialogService);
             _transactionCreationService = new TransactionCreationService(_unitOfWorkFactory, _dialogService);
 
         }
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-        private readonly IBarcodeGeneratorService _barcodeGeneratorService;
         private readonly IBarcodeImageService _barcodeImageService;
         private readonly IDialogService _dialogService;
         private readonly ProductUpdateService _productUpdateService;
@@ -50,6 +51,7 @@ namespace StoreManagementSystemX.Services
         private readonly UserCreationService _userCreationService;
         private readonly StockPurchaseCreationService _stockPurchaseCreationService;
         private readonly TransactionCreationService _transactionCreationService;
+        private readonly Domain.Repositories.Products.Interfaces.IProductRepository _productRepository;
         private BaseViewModel _currentViewModel;
 
         public BaseViewModel CurrentViewModel
@@ -77,7 +79,7 @@ namespace StoreManagementSystemX.Services
             else if (view == View.Inventory && _authenticationService.AuthContext != null)
             {
 
-                CurrentViewModel = new InventoryViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _productUpdateService, _productCreationService, _barcodeImageService);
+                CurrentViewModel = new InventoryViewModel(_authenticationService.AuthContext, _productRepository, _dialogService, _productUpdateService, _productCreationService, _barcodeImageService);
             }
             else if (view == View.Transactions && _authenticationService.AuthContext != null)
             {

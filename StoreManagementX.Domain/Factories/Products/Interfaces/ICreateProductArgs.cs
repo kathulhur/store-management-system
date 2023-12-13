@@ -4,12 +4,12 @@
     {
         Guid CreatorId { get; }
 
+        string? Barcode { get; }
+
         string Name { get; }
 
         decimal CostPrice { get; }
 
         decimal SellingPrice { get; }
-
-        int InStock { get; }
     }
 }

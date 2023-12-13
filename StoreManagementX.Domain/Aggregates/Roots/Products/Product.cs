@@ -11,10 +11,11 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Products
 {
     public class Product : IProduct
     {
-        internal Product(Guid creatorId, Guid id, string name, decimal costPrice, decimal sellingPrice, int inStock = 0)
+        internal Product(Guid creatorId, Guid id, string barcode, string name, decimal costPrice, decimal sellingPrice, int inStock = 0)
         {
             Id = id;
             Name = name;
+            Barcode = barcode;
             CostPrice = costPrice;
             SellingPrice = sellingPrice;
             InStock = inStock;
@@ -24,6 +25,8 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Products
         public Guid CreatorId { get; }
 
         public Guid Id { get; }
+
+        public string Barcode { get; }
 
         public string Name { get; set; }
 
