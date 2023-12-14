@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels;
@@ -18,20 +20,17 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 {
     public class TransactionListViewModel : BaseViewModel, ITransactionListViewModel
     {
-        public TransactionListViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, ITransactionCreationService transactionCreationService)
+        public TransactionListViewModel(AuthContext authContext, Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, IDialogService dialogService, ITransactionCreationService transactionCreationService)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _transactionRepository = transactionRepository;
             _authContext = authContext;
             _dialogService = dialogService;
             _transactionCreationService = transactionCreationService;
             Transactions = new ObservableCollection<ITransactionRowViewModel>();
 
-            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            foreach (var transaction in _transactionRepository.GetAll())
             {
-                foreach (var t in unitOfWork.TransactionRepository.Get(null, t => t.OrderByDescending(t => t.DateTime), "TransactionProducts, PayLater"))
-                {
-                    AddTransaction(t);
-                }
+                AddTransaction(transaction);
             }
 
 
@@ -42,7 +41,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             NewTransactionCommand = new RelayCommand(NewTransactionCommandHandler);
         }
 
-        private IUnitOfWorkFactory _unitOfWorkFactory { get; }
+        private Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository { get; }
         private AuthContext _authContext { get; }
         private IDialogService _dialogService { get; }
         private ITransactionCreationService _transactionCreationService { get; }
@@ -70,21 +69,22 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             var newTransactionId = _transactionCreationService.CreateNewTransaction(_authContext);
             if (newTransactionId != null)
             {
-                using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                var newTransaction = _transactionRepository.GetById((Guid)newTransactionId);
+                if(newTransaction != null && newTransaction.PayLater == null)
                 {
-                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid)newTransactionId, "TransactionProducts,TransactionProducts.Product");
-                    var newTransactionRow = new TransactionRowViewModel(_unitOfWorkFactory, _dialogService, newTransaction);
+                    var newTransactionRow = new TransactionRowViewModel(_transactionRepository, _dialogService, newTransaction);
                     SubscribeToTransactionRowEvents(newTransactionRow);
                     Transactions.Insert(0, newTransactionRow);
+
                 }
 
             }
         }
 
 
-        private void AddTransaction(Transaction newTransaction)
+        private void AddTransaction(ITransaction newTransaction)
         {
-            var newTransactionRow = new TransactionRowViewModel(_unitOfWorkFactory, _dialogService, newTransaction);
+            var newTransactionRow = new TransactionRowViewModel(_transactionRepository, _dialogService, newTransaction);
             SubscribeToTransactionRowEvents(newTransactionRow);
             Transactions.Add(newTransactionRow);
         }

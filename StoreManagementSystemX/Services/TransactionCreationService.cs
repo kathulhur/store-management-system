@@ -1,5 +1,8 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
+using StoreManagementSystemX.ViewModels.Transactions.Interfaces;
 using StoreManagementSystemX.Views.Transactions;
 using System;
 using System.Collections.Generic;
@@ -12,30 +15,30 @@ namespace StoreManagementSystemX.Services
     public class TransactionCreationService : ITransactionCreationService
     {
 
-        public TransactionCreationService(IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService)
+        public TransactionCreationService(
+            Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, 
+            Domain.Repositories.Products.Interfaces.IProductRepository productRepository, 
+            IDialogService dialogService)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _transactionRepository = transactionRepository;
+            _productRepository = productRepository;
             _dialogService = dialogService;
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
+        private readonly Domain.Repositories.Products.Interfaces.IProductRepository _productRepository;
 
         private readonly IDialogService _dialogService;
 
         public Guid? CreateNewTransaction(AuthContext authContext)
         {
             Guid? newTransaction = null;
-            using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            var window = new CreateTransactionWindow(authContext, _transactionRepository, _productRepository, _dialogService, (Guid transactionId) =>
             {
-                var window = new CreateTransactionWindow(authContext, unitOfWork, _dialogService, (Guid transactionId) =>
-                {
-                    newTransaction = transactionId;
-                });
+                newTransaction = transactionId;
+            });
 
-                window.ShowDialog();
-
-
-            }
+            window.ShowDialog();
             return newTransaction;
 
         }

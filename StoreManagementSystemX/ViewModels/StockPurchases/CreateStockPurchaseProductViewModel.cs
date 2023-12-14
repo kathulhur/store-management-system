@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
 using StoreManagementSystemX.ViewModels.StockPurchases.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,61 +16,45 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 {
     public class CreateStockPurchaseProductViewModel : BaseViewModel, ICreateStockPurchaseProductViewModel
     {
-        public CreateStockPurchaseProductViewModel(StockPurchase stockPurchase, Product product, Action<ICreateStockPurchaseProductViewModel> onRemove, Action<ICreateStockPurchaseProductViewModel> onIncrement, Action<ICreateStockPurchaseProductViewModel> onDecrement)
+        internal CreateStockPurchaseProductViewModel(IStockPurchase stockPurchase, IProduct product, Action<CreateStockPurchaseProductViewModel> onRemove, Action<CreateStockPurchaseProductViewModel> onIncrement, Action<CreateStockPurchaseProductViewModel> onDecrement)
         {
-            Product = product;
-            StockPurchase = stockPurchase;
-            _stockPurchaseProduct = new StockPurchaseProduct
-            {
-                ProductId = product.Id,
-                StockPurchaseId = stockPurchase.Id,
-                Price = product.CostPrice,
-            };
+            _stockPurchase = stockPurchase;
+            _product = product;
 
+            _incrementQuantityCommand = new RelayCommand(OnIncrementQuantity);
+            _decrementQuantityCommand = new RelayCommand(OnDecrementQuantity, CanDecrementQuantity);
 
+            Barcode = product.Barcode;
+            Name = product.Name;
+            Price = product.CostPrice;
             _onRemove = onRemove;
             _onIncrement = onIncrement;
             _onDecrement = onDecrement;
             RemoveCommand = new RelayCommand(OnRemove);
 
-            _incrementQuantityCommand = new RelayCommand(OnIncrementQuantity);
-            _decrementQuantityCommand = new RelayCommand(OnDecrementQuantity, CanDecrementQuantity);
-
             // this needs to be executed at the end because it uses the command instances above
-            Quantity += 1;
         }
 
-        private readonly Action<ICreateStockPurchaseProductViewModel> _onRemove;
-        private readonly Action<ICreateStockPurchaseProductViewModel> _onIncrement;
-        private readonly Action<ICreateStockPurchaseProductViewModel> _onDecrement;
+        private readonly Action<CreateStockPurchaseProductViewModel> _onRemove;
+        private readonly Action<CreateStockPurchaseProductViewModel> _onIncrement;
+        private readonly Action<CreateStockPurchaseProductViewModel> _onDecrement;
 
-        private StockPurchaseProduct _stockPurchaseProduct;
+        private IStockPurchase _stockPurchase;
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private IProduct _product;
 
-        public Product Product { get; }
 
-        public StockPurchase StockPurchase { get; }
+        public string Barcode { get; }
 
-        public string ProductBarcode => Product.Barcode;
+        public string Name { get; }
 
-        public string ProductName => Product.Name;
+        private int _quantity;
+        public int Quantity => _stockPurchase.StockPurchaseProducts.First(e => e.Barcode == _product.Barcode).QuantityBought;
 
-        public int Quantity
-        {
-            get => _stockPurchaseProduct.QuantityBought;
-            set
-            {
-                SetProperty(_stockPurchaseProduct.QuantityBought, value, _stockPurchaseProduct, (u, n) => u.QuantityBought = n);
-                Subtotal = Price * Quantity;
-                _decrementQuantityCommand.NotifyCanExecuteChanged();
-            }
-        }
+        public decimal Price { get; }
 
-        public decimal Price => Product.CostPrice;
+        public decimal TotalPrice => _stockPurchase.StockPurchaseProducts.First(e => e.Barcode == _product.Barcode).TotalCost;
 
-        private decimal _subtotal;
-        public decimal Subtotal { get => _subtotal; private set => SetProperty(ref _subtotal, value); }
 
         public ICommand RemoveCommand { get; }
 
@@ -80,41 +67,28 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 
         private void OnRemove()
         {
+            _stockPurchase.RemoveProduct(_product);
             _onRemove(this);
         }
 
         private void OnIncrementQuantity()
         {
-            Quantity += 1;
+            _stockPurchase.IncrementProduct(_product);
             _onIncrement(this);
+            OnPropertyChanged(nameof(Quantity));
+            _decrementQuantityCommand.NotifyCanExecuteChanged();
         }
 
         private void OnDecrementQuantity()
         {
-            Quantity -= 1;
+            _stockPurchase.DecrementProduct(_product);
+            OnPropertyChanged(nameof(Quantity));
             _onDecrement(this);
+            _decrementQuantityCommand.NotifyCanExecuteChanged();
         }
+
 
         private bool CanDecrementQuantity() => Quantity > 1;
 
-        private void Reset()
-        {
-            _stockPurchaseProduct = new StockPurchaseProduct
-            {
-                ProductId = Product.Id,
-                StockPurchaseId = StockPurchase.Id,
-                Price = Product.CostPrice,
-            };
-            Quantity = 1;
-        }
-
-        public StockPurchaseProduct BuildStockPurchaseProduct()
-        {
-            var newStockPurchaseProduct = _stockPurchaseProduct;
-            Product.InStock += Quantity;
-            Reset();
-            return newStockPurchaseProduct;
-            
-        }
     }
 }

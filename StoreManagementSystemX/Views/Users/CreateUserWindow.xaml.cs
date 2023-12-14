@@ -1,5 +1,6 @@
 ﻿using StoreManagementSystemX.Database.DAL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.ViewModels.Users;
 using System;
@@ -16,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using IUserRepository = StoreManagementSystemX.Domain.Repositories.Users.Interfaces.IUserRepository;
 
 namespace StoreManagementSystemX.Views.Users
 {
@@ -24,12 +26,15 @@ namespace StoreManagementSystemX.Views.Users
     /// </summary>
     public partial class CreateUserWindow : Window
     {
-        public CreateUserWindow(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, Action<Guid> onCreate)
+        public CreateUserWindow(
+            AuthContext authContext, 
+            IUserRepository userRepository, 
+            Action<Guid> onCreate)
         {
             InitializeComponent();
             this.Owner = Application.Current.MainWindow;
 
-            _viewModel = new CreateUserViewModel(authContext, unitOfWorkFactory, onCreate, () =>
+            _viewModel = new CreateUserViewModel(authContext, userRepository, onCreate, () =>
             {
                 Close();
             });

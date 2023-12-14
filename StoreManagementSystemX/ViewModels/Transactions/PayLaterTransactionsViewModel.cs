@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels;
 using StoreManagementSystemX.ViewModels.Transactions;
+using StoreManagementSystemX.ViewModels.Transactions.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,24 +21,21 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 {
     public class PayLaterTransactionsViewModel: BaseViewModel
     {
-        public PayLaterTransactionsViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, ITransactionCreationService transactionCreationService)
+        public PayLaterTransactionsViewModel(AuthContext authContext, Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, IDialogService dialogService, ITransactionCreationService transactionCreationService)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _transactionRepository = transactionRepository;
             _authContext = authContext;
             _dialogService = dialogService;
             _transactionCreationService = transactionCreationService;
             Transactions = new ObservableCollection<PayLaterTransactionRowViewModel>();
             NewTransactionCommand = new RelayCommand(NewTransactionCommandHandler);
-            using(var unitOfWork  = _unitOfWorkFactory.CreateUnitOfWork())
-            {
-                foreach(var transaction in unitOfWork.TransactionRepository.Get(t => t.PayLater != null, t => t.OrderByDescending(t => t.DateTime), "TransactionProducts, TransactionProducts.Product, PayLater"))
-                {
-                    if(transaction != null)
-                    {
-                        Transactions.Add(new PayLaterTransactionRowViewModel(unitOfWorkFactory, transaction, dialogService));
-                    }
-                }
 
+            foreach(var transaction in _transactionRepository.GetAll())
+            {
+                if(transaction != null)
+                {
+                    Transactions.Add(new PayLaterTransactionRowViewModel(transactionRepository, transaction, dialogService));
+                }
             }
 
             if (Transactions.Any())
@@ -44,7 +44,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             }
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
         private readonly AuthContext _authContext;
         private readonly IDialogService _dialogService;
         private readonly ITransactionCreationService _transactionCreationService;
@@ -56,43 +56,27 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             var newTransactionId = _transactionCreationService.CreateNewTransaction(_authContext);
             if (newTransactionId != null)
             {
-                using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                var newTransaction = _transactionRepository.GetById((Guid)newTransactionId);
+                if(newTransaction != null && newTransaction.PayLater != null)
                 {
-                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid)newTransactionId, "TransactionProducts, TransactionProducts.Product, PayLater");
-                    if(newTransaction != null)
-                    {
-                        if (newTransaction.PayLater != null) { }
-                        {
-                            var newTransactionRow = new PayLaterTransactionRowViewModel(_unitOfWorkFactory, newTransaction, _dialogService);
-                            //SubscribeToTransactionRowEvents(newTransactionRow);
-                            Transactions.Insert(0, newTransactionRow);
-                        }
-                    }
+                    var newTransactionRow = new PayLaterTransactionRowViewModel(_transactionRepository, newTransaction, _dialogService);
+                    //SubscribeToTransactionRowEvents(newTransactionRow);
+                    Transactions.Insert(0, newTransactionRow);
                 }
 
             }
         }
-
-        //private void SubscribeToTransactionRowEvents(PayLaterTransactionRowViewModel transactionRow)
-        //{
-        //    transactionRow.TransactionDeleted += HandleTransactionDeletion;
-        //}
-
-        //private void UnsubscribeToTransactionRowEvents(ITransactionRowViewModel transactionRow)
-        //{
-        //    transactionRow.TransactionDeleted -= PayLaterTransactionRowViewModel;
-        //}
 
         public ObservableCollection<PayLaterTransactionRowViewModel> Transactions { get; }
 
 
         public PayLaterTransactionRowViewModel? SelectedTransaction { get; set; }
 
-        public void OnCreateTransaction(Transaction newTransaction)
+        public void OnCreateTransaction(ITransaction newTransaction)
         {
             if(newTransaction.PayLater != null) 
             {
-                Transactions?.Insert(0, new PayLaterTransactionRowViewModel(_unitOfWorkFactory, newTransaction, _dialogService));
+                Transactions?.Insert(0, new PayLaterTransactionRowViewModel(_transactionRepository, newTransaction, _dialogService));
             }
 
         }

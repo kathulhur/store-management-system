@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
+using StoreManagementSystemX.ViewModels.StockPurchases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +12,18 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 {
     public class StockPurchaseProductViewModel : ObservableObject
     {
-        public StockPurchaseProductViewModel(StockPurchaseProduct stockPurchaseProduct)
+        public StockPurchaseProductViewModel(IStockPurchaseProduct stockPurchaseProduct)
         {
             _stockPurchaseProduct = stockPurchaseProduct;
         }
 
-        private readonly StockPurchaseProduct _stockPurchaseProduct;
+        private readonly IStockPurchaseProduct _stockPurchaseProduct;
 
         public Guid ProductId => _stockPurchaseProduct.ProductId;
 
-        public Guid TransactionId => _stockPurchaseProduct.StockPurchaseId;
+        public string Name => _stockPurchaseProduct.Name;
 
-        public string Name => _stockPurchaseProduct.Product.Name;
-
-        public string Barcode => _stockPurchaseProduct.Product.Barcode;
+        public string Barcode => _stockPurchaseProduct.Barcode;
 
         public decimal Price => _stockPurchaseProduct.Price;
 

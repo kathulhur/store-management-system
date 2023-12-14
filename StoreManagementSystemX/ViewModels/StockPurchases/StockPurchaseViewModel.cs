@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.EntityFrameworkCore.Query;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,12 +16,12 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 {
     public class StockPurchaseViewModel : ObservableObject
     {
-        public StockPurchaseViewModel(StockPurchase stockPurchase)
+        public StockPurchaseViewModel(IStockPurchase stockPurchase)
         {
             _stockPurchase = stockPurchase;
         }
 
-        private readonly StockPurchase _stockPurchase;
+        private readonly IStockPurchase _stockPurchase;
 
         public Guid Id => _stockPurchase.Id;
 
@@ -30,7 +31,5 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 
         public decimal TotalCost => StockPurchaseProducts.Sum(e => e.TotalPrice);
 
-        public static IEnumerable<StockPurchaseViewModel> From(IEnumerable<StockPurchase> stockPurchases)
-            => stockPurchases.Select(e => new StockPurchaseViewModel(e));
     }
 }

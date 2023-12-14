@@ -1,7 +1,10 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Transactions;
+using StoreManagementSystemX.ViewModels.Transactions.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +28,13 @@ namespace StoreManagementSystemX.Views.Transactions
     public partial class CreateTransactionWindow : Window
     {
 
-        public CreateTransactionWindow(AuthContext authContext, IUnitOfWork unitOfWork, IDialogService dialogService, Action<Guid> onSave)
+        public CreateTransactionWindow(
+            AuthContext authContext,
+            Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, 
+            Domain.Repositories.Products.Interfaces.IProductRepository productRepository, IDialogService dialogService, Action<Guid> onSave)
         {
             InitializeComponent();
-            _viewModel = new CreateTransactionViewModel(authContext, unitOfWork, dialogService, (Guid newTransactionId) =>
+            _viewModel = new CreateTransactionViewModel(authContext, transactionRepository, productRepository, dialogService, (Guid newTransactionId) =>
             {
                 onSave(newTransactionId);
                 Close();

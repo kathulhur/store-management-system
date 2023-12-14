@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Transactions.Interfaces;
@@ -18,9 +20,13 @@ namespace StoreManagementSystemX.ViewModels.Users
     public class UserListViewModel : BaseViewModel, IUserListViewModel
     {
 
-        public UserListViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, IUserCreationService userCreationService)
+        public UserListViewModel(
+            AuthContext authContext, 
+            Domain.Repositories.Users.Interfaces.IUserRepository userRepository, 
+            IDialogService dialogService, 
+            IUserCreationService userCreationService)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _userRepository = userRepository;
             _authContext = authContext;
 
             Users = new ObservableCollection<IUserRowViewModel>();
@@ -28,19 +34,16 @@ namespace StoreManagementSystemX.ViewModels.Users
             _dialogService = dialogService;
             _userCreationService = userCreationService;
 
-            using (var unitOfWork = unitOfWorkFactory.CreateUnitOfWork())
+            foreach (var user in _userRepository.GetAll())
             {
-                foreach (var user in unitOfWork.UserRepository.Get())
-                {
-                    AddUser(user);
-                }
+                AddUserToCollection(user);
             }
 
             NewUserCommand = new RelayCommand(NewUserCommandHandler);
         }
         private IUserCreationService _userCreationService;
 
-        private IUnitOfWorkFactory _unitOfWorkFactory;
+        private Domain.Repositories.Users.Interfaces.IUserRepository _userRepository;
 
         private AuthContext _authContext;
 
@@ -55,19 +58,17 @@ namespace StoreManagementSystemX.ViewModels.Users
             var newUserId = _userCreationService.CreateNewUser(_authContext);
             if (newUserId != null && newUserId.HasValue)
             {
-                using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                var newUser = _userRepository.GetById((Guid)newUserId);
+                if (newUser != null)
                 {
-                    var newUser = unitOfWork.UserRepository.GetById((Guid)newUserId);
-                    if (newUser != null)
-                        AddUser(newUser);
-
+                    AddUserToCollection(newUser);
                 }
             }
         }
 
-        private void AddUser(User newUser)
+        private void AddUserToCollection(IUser user)
         {
-            var userRow = new UserRowViewModel(this, newUser);
+            var userRow = new UserRowViewModel(this, user);
             SubscribeToUserRow(userRow);
             Users.Add(userRow);
         }
@@ -100,7 +101,7 @@ namespace StoreManagementSystemX.ViewModels.Users
         class UserRowViewModel : IUserRowViewModel
         {
             private readonly UserListViewModel _parent;
-            public UserRowViewModel(UserListViewModel parent, User user)
+            public UserRowViewModel(UserListViewModel parent, IUser user)
             {
                 _user = user;
                 _parent = parent;
@@ -108,7 +109,7 @@ namespace StoreManagementSystemX.ViewModels.Users
                 UpdateCommand = new RelayCommand(UpdateCommandHandler, () => _user.Username != "admin");
             }
 
-            private readonly User _user;
+            private readonly IUser _user;
 
             public Guid Id => _user.Id;
 
@@ -128,12 +129,8 @@ namespace StoreManagementSystemX.ViewModels.Users
             {
                 if (_parent._dialogService.ShowConfirmationDialog("Confirm Delete", "Do you really want to delete this user?"))
                 {
-                    using (var unitOfWork = _parent._unitOfWorkFactory.CreateUnitOfWork())
-                    {
-                        unitOfWork.UserRepository.Delete(_user.Id);
-                        unitOfWork.Save();
-                        OnUserDeleted(new EventArgs<IUserRowViewModel>(this));
-                    }
+                    _parent._userRepository.Remove(_user.Id);
+                    OnUserDeleted(new EventArgs<IUserRowViewModel>(this));
                 }
             }
 
@@ -141,9 +138,6 @@ namespace StoreManagementSystemX.ViewModels.Users
             {
                 UserDeleted?.Invoke(this, e);
             }
-
-            public static IEnumerable<UserRowViewModel> From(UserListViewModel parent, IEnumerable<User> users)
-                => users.Select(e => new UserRowViewModel(parent, e));
         }
 
 

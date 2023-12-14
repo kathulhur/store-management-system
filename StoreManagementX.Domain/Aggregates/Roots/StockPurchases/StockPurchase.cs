@@ -19,6 +19,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
         {
             Id = id;
             StockManagerId = stockManagerId;
+            DateTime = DateTime.Now;
         }
 
         public Guid Id { get; }
@@ -31,7 +32,10 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
 
         public Guid StockManagerId { get; }
 
-        public void AddProduct(IProduct product)
+        public DateTime DateTime { get; }
+
+        // Add single quantity of the product
+        public IStockPurchaseProduct AddProduct(IProduct product)
         {
             var matchedProduct = _stockPurchaseProduct.FirstOrDefault(tp => tp.ProductId == product.Id);
 
@@ -39,19 +43,44 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
             {
                 var stockPurchaseProduct = new StockPurchaseProduct(this, product);
                 _stockPurchaseProduct.Add(stockPurchaseProduct);
+                product.InStock += 1;
+                return stockPurchaseProduct;
             } else
             {
                 matchedProduct.QuantityBought += 1;
+                product.InStock += 1;
+                return matchedProduct;
             }
-            product.InStock += 1;
         }
 
-        public void RemoveProduct(IProduct product)
-        {
-            var stockPurchaseProductFound = _stockPurchaseProduct.First();
-            _stockPurchaseProduct.Remove(stockPurchaseProductFound);
 
+        public IStockPurchaseProduct IncrementProduct(IProduct product, int quantity = 1)
+        {
+            var stockPurchaseProduct = _stockPurchaseProduct.First(tp => tp.ProductId == product.Id);
+            stockPurchaseProduct.QuantityBought += quantity;
+            product.InStock += quantity;
+
+            return stockPurchaseProduct;
+        }
+
+        public IStockPurchaseProduct DecrementProduct(IProduct product, int quantity = 1)
+        {
+            var stockPurchaseProduct = _stockPurchaseProduct.First(tp => tp.ProductId == product.Id);
+            stockPurchaseProduct.QuantityBought -= quantity;
+            product.InStock -= quantity;
+
+            return stockPurchaseProduct;
+        }
+
+        // Remove all of this product in the stock purchase
+        public IStockPurchaseProduct RemoveProduct(IProduct product)
+        {
+            var stockPurchaseProductFound = _stockPurchaseProduct.First(e => e.ProductId == product.Id);
+            product.InStock -= stockPurchaseProductFound.QuantityBought;
+            _stockPurchaseProduct.Remove(stockPurchaseProductFound);
             TotalAmount -= stockPurchaseProductFound.TotalCost;
+
+            return stockPurchaseProductFound;
         }
 
         public override bool Equals(object? obj)
@@ -71,6 +100,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
 
 
 
+
         // id value object
         public class StockPurchaseProduct : IStockPurchaseProduct
         {
@@ -79,8 +109,9 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
                 _stockPurchase = stockPurchase;
                 ProductId = product.Id;
 
-                ProductName = product.Name;
-                CostPrice = product.CostPrice;
+                Name = product.Name;
+                Price = product.CostPrice;
+                Barcode = product.Barcode;
                 QuantityBought = 1;
             }
 
@@ -88,9 +119,9 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
             
             public Guid ProductId { get; }
 
-            public string ProductName { get; }
+            public string Name { get; }
 
-            public decimal CostPrice { get; }
+            public decimal Price { get; }
 
             private int _quantityBought;
             public int QuantityBought
@@ -108,8 +139,9 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
             }
 
 
-            public decimal TotalCost => CostPrice * QuantityBought;
-            
+            public decimal TotalCost => Price * QuantityBought;
+
+            public string Barcode { get; }
 
             public override bool Equals(object? obj)
             {

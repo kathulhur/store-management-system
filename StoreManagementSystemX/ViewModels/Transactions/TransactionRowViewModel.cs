@@ -2,6 +2,8 @@
 using SQLitePCL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Transactions;
 using StoreManagementSystemX.ViewModels.Transactions.Interfaces;
@@ -19,7 +21,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 {
     public class TransactionRowViewModel : ITransactionRowViewModel
     {
-        public TransactionRowViewModel(IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, Transaction transaction)
+        public TransactionRowViewModel(Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, IDialogService dialogService, ITransaction transaction)
         {
             _transaction = transaction;
             _transactionProducts = new List<TransactionProductRowViewModel>();
@@ -27,18 +29,18 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             {
                 _transactionProducts.Add(new TransactionProductRowViewModel(t));
             }
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _transactionRepository = transactionRepository;
             _dialogService = dialogService;
             DeleteCommand = new RelayCommand(DeleteCommandHandler);
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
         private readonly IDialogService _dialogService;
-        private readonly Transaction _transaction;
+        private readonly ITransaction _transaction;
 
         public Guid Id => _transaction.Id;
 
-        public string CustomerName => _transaction?.PayLater?.CustomerName ?? "";
+        public string CustomerName => _transaction.PayLater?.CustomerName ?? "";
 
         public DateTime DateTime => _transaction.DateTime;
 
@@ -65,12 +67,8 @@ namespace StoreManagementSystemX.ViewModels.Transactions
         {
             if(_dialogService.ShowConfirmationDialog("Confirm Delete", "Do you really want to delete this transaction record?"))
             {
-                using(var unitOfWork =  _unitOfWorkFactory.CreateUnitOfWork())
-                {
-                    unitOfWork.TransactionRepository.Delete(Id);
-                    unitOfWork.Save();
-                    OnTransactionDeleted(new EventArgs<ITransactionRowViewModel>(this));
-                };
+                _transactionRepository.Remove(Id);
+                OnTransactionDeleted(new EventArgs<ITransactionRowViewModel>(this));
             }
         }
        

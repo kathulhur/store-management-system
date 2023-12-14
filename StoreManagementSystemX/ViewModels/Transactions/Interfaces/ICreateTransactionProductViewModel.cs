@@ -1,6 +1,8 @@
-﻿using System;
+﻿using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -9,13 +11,16 @@ namespace StoreManagementSystemX.ViewModels.Transactions.Interfaces
 {
     public interface ICreateTransactionProductViewModel
     {
+
+        public IProduct Product { get; }
+
         public string ProductBarcode { get; }
 
         public string ProductName { get; }
 
         public decimal Price { get; }
 
-        public int Quantity { get; set; }
+        public int Quantity { get; }
 
         public decimal Subtotal { get; }
 
@@ -27,8 +32,6 @@ namespace StoreManagementSystemX.ViewModels.Transactions.Interfaces
 
         public ICommand DecrementQuantityCommand { get; }
         public event EventHandler<EventArgs<ICreateTransactionProductViewModel>> QuantityDecremented;
-
-        public void OnDone();
 
     }
 

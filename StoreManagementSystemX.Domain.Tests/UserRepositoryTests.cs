@@ -5,6 +5,7 @@ using StoreManagementSystemX.Domain.Factories.Products;
 using StoreManagementSystemX.Domain.Factories.Products.Interfaces;
 using StoreManagementSystemX.Domain.Factories.StockPurchases;
 using StoreManagementSystemX.Domain.Factories.Transactions;
+using StoreManagementSystemX.Domain.Factories.Transactions.Interfaces;
 using StoreManagementSystemX.Domain.Factories.Users;
 using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
 using StoreManagementSystemX.Domain.Repositories;
@@ -28,7 +29,8 @@ namespace StoreManagementSystemX.Tests
             var productRepository = new ProductRepository();
             var barcodeGenerationService = new BarcodeGenerationService(productRepository);
             var productFactory = new ProductFactory(barcodeGenerationService);
-            var transactionFactory = new TransactionFactory();
+            var payLaterFactory = new PayLaterFactory();
+            var transactionFactory = new TransactionFactory(payLaterFactory);
             var stockPurchaseFactory = new StockPurchaseFactory();
             var userFactory = new UserFactory(productFactory, transactionFactory, stockPurchaseFactory);
             return userFactory;

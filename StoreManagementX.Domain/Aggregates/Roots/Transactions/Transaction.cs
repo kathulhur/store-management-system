@@ -7,6 +7,7 @@ using static StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Transac
 using StoreManagementSystemX.Domain.Aggregates.Roots.Products;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using StoreManagementSystemX.Domain.Factories.Transactions.Interfaces;
 
 namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
 {
@@ -17,11 +18,15 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
     public class Transaction : ITransaction
     {
 
-        internal Transaction(Guid sellerId, Guid id)
+        internal Transaction(Guid sellerId, Guid id, PayLaterFactory payLaterFactory)
         {
             Id = id;
             SellerId = sellerId;
+            DateTime = DateTime.Now;
+            _payLaterFactory = payLaterFactory;
         }
+
+        private readonly PayLaterFactory _payLaterFactory;
 
         public Guid SellerId { get; }
 
@@ -33,7 +38,13 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
 
         public decimal TotalAmount { get; private set; }
 
-        public void AddProduct(IProduct product)
+        private PayLater _payLater { get; set; }
+
+        public IPayLater? PayLater => _payLater;
+
+        public DateTime DateTime { get; }
+
+        public ITransactionProduct AddProduct(IProduct product)
         {
             var matchedProduct = _transactionProducts.FirstOrDefault(tp => tp.ProductId == product.Id);
 
@@ -41,19 +52,45 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
             {
                 var transactionProduct = new TransactionProduct(this, product);
                 _transactionProducts.Add(transactionProduct);
+                product.InStock -= 1;
+                return transactionProduct;
             } else
             {
-                matchedProduct.QuantityBought += 1;
+                return IncrementProduct(product);
             }
-            product.InStock -= 1;
         }
 
-        public void RemoveProduct(IProduct product)
+        public ITransactionProduct IncrementProduct(IProduct product, int quantity = 1)
+        {
+            var transactionProduct = _transactionProducts.First(tp => tp.ProductId == product.Id);
+            transactionProduct.QuantityBought += quantity;
+            product.InStock -= quantity;
+
+            return transactionProduct;
+        }
+
+        public ITransactionProduct DecrementProduct(IProduct product, int quantity = 1)
+        {
+            var transactionProduct = _transactionProducts.First(tp => tp.ProductId == product.Id);
+            transactionProduct.QuantityBought -= quantity;
+            product.InStock += quantity;
+
+            return transactionProduct;
+        }
+
+        public ITransactionProduct RemoveProduct(IProduct product)
         {
             var transactionProductFound = _transactionProducts.First();
+            product.InStock += transactionProductFound.QuantityBought;
             _transactionProducts.Remove(transactionProductFound);
-
             TotalAmount -= transactionProductFound.TotalPrice;
+
+            return transactionProductFound;
+        }
+
+        public void MarkAsPaid()
+        {
+            _payLater.IsPaid = true;
         }
 
         public override bool Equals(object? obj)
@@ -61,6 +98,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
             return obj is Transaction transaction &&
                    Id.Equals(transaction.Id);
         }
+
 
         public override int GetHashCode()
         {
@@ -70,7 +108,10 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
         public override string ToString()
             => $"{nameof(Transaction)}: {Id} - Total Amount: {TotalAmount}";
 
-
+        public void SetPayLaterDetails(string customerName)
+        {
+            _payLater = (PayLater) _payLaterFactory.Create(customerName);
+        }
 
 
         // id value object

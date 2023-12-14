@@ -1,4 +1,6 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.StockPurchases.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.StockPurchases;
@@ -23,10 +25,10 @@ namespace StoreManagementSystemX.Views.StockPurchases;
 /// </summary>
 public partial class CreateStockPurchaseWindow : Window
 {
-    public CreateStockPurchaseWindow(AuthContext authContext, IUnitOfWork unitOfWork, IDialogService dialogService, Action<Guid> onAdd)
+    public CreateStockPurchaseWindow(AuthContext authContext, Domain.Repositories.StockPurchases.Interfaces.IStockPurchaseRepository stockPurchaseRepository, Domain.Repositories.Products.Interfaces.IProductRepository productRepository, IDialogService dialogService, Action<Guid> onAdd)
     {
         InitializeComponent();
-        ViewModel = new CreateStockPurchaseViewModel(authContext, unitOfWork, dialogService, (Guid newStockPurchaseId) =>
+        ViewModel = new CreateStockPurchaseViewModel(authContext, stockPurchaseRepository, productRepository, dialogService, (Guid newStockPurchaseId) =>
         {
             onAdd(newStockPurchaseId);
             Close();

@@ -43,11 +43,11 @@
 
             <DataGrid Grid.Row="1" Margin="16" ItemsSource="{Binding StockPurchaseProducts }" AutoGenerateColumns="False" IsReadOnly="True" d:ItemsSource="{d:SampleData ItemCount=5}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Barcode" Binding="{Binding ProductBarcode}" Width="150"/>
-                    <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
+                    <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="150"/>
+                    <DataGridTextColumn Header="Product" Binding="{Binding Name}" Width="*"/>
                     <DataGridTemplateColumn Header="Quantity" CellTemplate="{StaticResource CreateStockPurchaseProductQuantityColumn}"/>
                     <DataGridTextColumn Header="Price" Binding="{Binding Price}" MinWidth="100"/>
-                    <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, NotifyOnSourceUpdated=True}" MinWidth="100"/>
+                    <DataGridTextColumn Header="Subtotal" Binding="{Binding Totalprice, NotifyOnSourceUpdated=True}" MinWidth="100"/>
                     <DataGridTemplateColumn CellTemplate="{StaticResource CreateStockPurchaseProductActionsColumn}" Width="150"/>
                 </DataGrid.Columns>
             </DataGrid>

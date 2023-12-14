@@ -1,5 +1,6 @@
 ﻿using StoreManagementSystemX.Domain.Factories.Transactions;
-using StoreManagementSystemX.Domain.Repositories;
+using StoreManagementSystemX.Domain.Factories.Transactions.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,12 @@ namespace StoreManagementSystemX.Domain.Tests
 {
     public class TransactionRepositoryTests
     {
+        private static PayLaterFactory payLaterFactory = new PayLaterFactory();
 
         private TransactionRepository CreateTransactionRepositoryWithSingleTransaction()
         {
             TransactionRepository transactionRepository = new TransactionRepository();
-            TransactionFactory transactionFactory = new TransactionFactory();
+            TransactionFactory transactionFactory = new TransactionFactory(payLaterFactory);
 
             var transaction = transactionFactory.Create(Guid.NewGuid());
 

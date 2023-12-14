@@ -1,4 +1,5 @@
 ﻿using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.Views.Users;
 using System;
@@ -11,17 +12,17 @@ namespace StoreManagementSystemX.Services
 {
     public class UserCreationService : IUserCreationService
     {
-        public UserCreationService(IUnitOfWorkFactory unitOfWorkFactory)
+        public UserCreationService(Domain.Repositories.Users.Interfaces.IUserRepository userRepository)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _userRepository = userRepository;
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.Users.Interfaces.IUserRepository _userRepository;
 
         public Guid? CreateNewUser(AuthContext authContext)
         {
             Guid? newUserId = null;
-            var window = new CreateUserWindow(authContext, _unitOfWorkFactory, (Guid id) =>
+            var window = new CreateUserWindow(authContext, _userRepository, (Guid id) =>
             {
                 newUserId = id;
             });

@@ -1,4 +1,6 @@
 ﻿using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +12,15 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases.Interfaces
 {
     public interface ICreateStockPurchaseProductViewModel
     {
-        public string ProductBarcode { get; }
+        public string Barcode { get; }
 
-        public Product Product { get; }
+        public string Name { get; }
 
-        public StockPurchase StockPurchase { get; }
-
-
-        public string ProductName { get; }
-
-        public int Quantity { get; set; }
+        public int Quantity { get; }
 
         public decimal Price { get; }
 
-        public decimal Subtotal { get; }
+        public decimal TotalPrice { get; }
 
         public ICommand RemoveCommand { get; }
 
@@ -31,6 +28,5 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases.Interfaces
 
         public ICommand DecrementQuantityCommand { get; }
 
-        public StockPurchaseProduct BuildStockPurchaseProduct();
     }
 }

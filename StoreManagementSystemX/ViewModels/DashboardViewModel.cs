@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using StoreManagementSystemX.Database.DAL.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Interfaces;
@@ -19,21 +20,20 @@ namespace StoreManagementSystemX.ViewModels
     {
         
 
-        public DashboardViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, ITransactionCreationService transactionCreationService) 
+        public DashboardViewModel(AuthContext authContext, Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, IDialogService dialogService, ITransactionCreationService transactionCreationService) 
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _transactionRepository = transactionRepository;
             _authContext = authContext;
             _dialogService = dialogService;
             _transactionCreationService = transactionCreationService;
             TransactionsToday = new ObservableCollection<ITransactionRowViewModel>();
-            using(var unitOfWork = unitOfWorkFactory.CreateUnitOfWork())
+
+            var transactions = _transactionRepository.GetAll();
+            foreach (var transaction in transactions)
             {
-                var transactions = unitOfWork.TransactionRepository.Get(t => t.DateTime.Date == DateTime.Now.Date, t => t.OrderByDescending(e => e.DateTime), "TransactionProducts");
-                foreach (var transaction in transactions)
-                {
-                    TransactionsToday.Add(new TransactionRowViewModel(unitOfWorkFactory, _dialogService, transaction));
-                }
+                TransactionsToday.Add(new TransactionRowViewModel(transactionRepository, _dialogService, transaction));
             }
+
             NewTransactionCommand = new RelayCommand(NewTransactionCommandHandler);
             if (TransactionsToday.Any())
             {
@@ -46,7 +46,7 @@ namespace StoreManagementSystemX.ViewModels
             }
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
         private readonly AuthContext _authContext;
         private readonly IDialogService _dialogService;
         private readonly ITransactionCreationService _transactionCreationService;
@@ -113,15 +113,12 @@ namespace StoreManagementSystemX.ViewModels
             var newTransactionId = _transactionCreationService.CreateNewTransaction(_authContext);
             if(newTransactionId != null)
             {
-                using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                var newTransaction = _transactionRepository.GetById((Guid) newTransactionId);
+                if(newTransaction != null)
                 {
-                    var newTransaction = unitOfWork.TransactionRepository.GetById((Guid) newTransactionId, "TransactionProducts,TransactionProducts.Product");
-                    if(newTransaction != null)
-                    {
-                        TransactionsToday.Insert(0, new TransactionRowViewModel(_unitOfWorkFactory, _dialogService, newTransaction));
-                    }
-                    NotifyPropertiesChanged();
+                    TransactionsToday.Insert(0, new TransactionRowViewModel(_transactionRepository, _dialogService, newTransaction));
                 }
+                NotifyPropertiesChanged();
             }
 
         }

@@ -15,18 +15,22 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfac
     {
         public Guid Id { get; }
 
+        public DateTime DateTime { get; }
+
         public Guid StockManagerId { get; }
 
         public IReadOnlyList<IStockPurchaseProduct> StockPurchaseProducts { get; }
 
         public decimal TotalAmount { get; }
 
-        public void AddProduct(IProduct product);
+        public IStockPurchaseProduct AddProduct(IProduct product);
 
-        public void RemoveProduct(IProduct product);
+        public IStockPurchaseProduct IncrementProduct(IProduct product, int quantity = 1);
 
+        public IStockPurchaseProduct DecrementProduct(IProduct product, int quantity = 1);
 
-        
+        public IStockPurchaseProduct RemoveProduct(IProduct product);
+
         
     }
 }

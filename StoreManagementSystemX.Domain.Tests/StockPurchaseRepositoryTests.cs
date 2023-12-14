@@ -1,5 +1,6 @@
 ﻿using StoreManagementSystemX.Domain.Factories.StockPurchases;
 using StoreManagementSystemX.Domain.Factories.Transactions;
+using StoreManagementSystemX.Domain.Repositories.StockPurchases;
 using System;
 using System.Collections.Generic;
 using System.Linq;

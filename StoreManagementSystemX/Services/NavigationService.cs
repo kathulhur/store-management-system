@@ -26,7 +26,10 @@ namespace StoreManagementSystemX.Services
             IUnitOfWorkFactory unitOfWorkFactory,
             IAuthenticationService authenticationService,
             IDialogService dialogService,
-            Domain.Repositories.Products.Interfaces.IProductRepository productRepository 
+            Domain.Repositories.Products.Interfaces.IProductRepository productRepository,
+            Domain.Repositories.StockPurchases.Interfaces.IStockPurchaseRepository stockPurchaseRepository,
+            Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository,
+            Domain.Repositories.Users.Interfaces.IUserRepository userRepository
         )
         {
             _currentViewModel = initialViewModel;
@@ -34,12 +37,15 @@ namespace StoreManagementSystemX.Services
             _unitOfWorkFactory = unitOfWorkFactory;
             _dialogService = dialogService;
             _productRepository = productRepository;
+            _stockPurchaseRepository = stockPurchaseRepository;
+            _transactionRepository = transactionRepository;
+            _userRepository = userRepository;
             _productUpdateService = new ProductUpdateService(productRepository);
             _barcodeImageService = new BarcodeImageService();
             _productCreationService = new ProductCreationService(_productRepository, _barcodeImageService);
-            _userCreationService = new UserCreationService(_unitOfWorkFactory);
-            _stockPurchaseCreationService = new StockPurchaseCreationService(_unitOfWorkFactory, _dialogService);
-            _transactionCreationService = new TransactionCreationService(_unitOfWorkFactory, _dialogService);
+            _userCreationService = new UserCreationService(_userRepository);
+            _stockPurchaseCreationService = new StockPurchaseCreationService(stockPurchaseRepository, productRepository, _dialogService);
+            _transactionCreationService = new TransactionCreationService(_transactionRepository, _productRepository, _dialogService);
 
         }
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
@@ -51,7 +57,11 @@ namespace StoreManagementSystemX.Services
         private readonly UserCreationService _userCreationService;
         private readonly StockPurchaseCreationService _stockPurchaseCreationService;
         private readonly TransactionCreationService _transactionCreationService;
+
         private readonly Domain.Repositories.Products.Interfaces.IProductRepository _productRepository;
+        private readonly Domain.Repositories.StockPurchases.Interfaces.IStockPurchaseRepository _stockPurchaseRepository;
+        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
+        private readonly Domain.Repositories.Users.Interfaces.IUserRepository _userRepository;
         private BaseViewModel _currentViewModel;
 
         public BaseViewModel CurrentViewModel
@@ -74,7 +84,7 @@ namespace StoreManagementSystemX.Services
             }
             else if (view == View.Dashboard && _authenticationService.AuthContext != null)
             {
-                CurrentViewModel = new DashboardViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _transactionCreationService);
+                CurrentViewModel = new DashboardViewModel(_authenticationService.AuthContext, _transactionRepository, _dialogService, _transactionCreationService);
             }
             else if (view == View.Inventory && _authenticationService.AuthContext != null)
             {
@@ -83,20 +93,20 @@ namespace StoreManagementSystemX.Services
             }
             else if (view == View.Transactions && _authenticationService.AuthContext != null)
             {
-                CurrentViewModel = new TransactionListViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _transactionCreationService);
+                CurrentViewModel = new TransactionListViewModel(_authenticationService.AuthContext, _transactionRepository, _dialogService, _transactionCreationService);
             }
             else if (view == View.PayLaterTransactions && _authenticationService.AuthContext != null)
             {
-                CurrentViewModel = new PayLaterTransactionsViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _transactionCreationService);
+                CurrentViewModel = new PayLaterTransactionsViewModel(_authenticationService.AuthContext, _transactionRepository, _dialogService, _transactionCreationService);
             }
             else if (view == View.UserList && _authenticationService.AuthContext != null)
             {
 
-                CurrentViewModel = new UserListViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _userCreationService);
+                CurrentViewModel = new UserListViewModel(_authenticationService.AuthContext, _userRepository, _dialogService, _userCreationService);
             }
             else if (view == View.StockPurchaseList && _authenticationService.AuthContext != null)
             {
-                CurrentViewModel = new StockPurchaseListViewModel(_authenticationService.AuthContext, _unitOfWorkFactory, _dialogService, _stockPurchaseCreationService);
+                CurrentViewModel = new StockPurchaseListViewModel(_authenticationService.AuthContext, _stockPurchaseRepository, _dialogService, _stockPurchaseCreationService);
             }
             else
             {

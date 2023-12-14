@@ -10,9 +10,11 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfac
     {
             public Guid ProductId { get; }
 
-            public string ProductName { get; }
+            public string Barcode { get; }
 
-            public decimal CostPrice { get; }
+            public string Name { get; }
+
+            public decimal Price { get; }
 
             public int QuantityBought { get; }
 

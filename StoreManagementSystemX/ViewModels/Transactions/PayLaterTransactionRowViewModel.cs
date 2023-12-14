@@ -2,7 +2,10 @@
 using SQLitePCL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
+using StoreManagementSystemX.ViewModels.Transactions.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,10 +18,13 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 {
     public class PayLaterTransactionRowViewModel : BaseViewModel
     {
-        public PayLaterTransactionRowViewModel(IUnitOfWorkFactory unitOfWorkFactory, Transaction transaction, IDialogService dialogService)
+        public PayLaterTransactionRowViewModel(
+            Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, 
+            ITransaction transaction, 
+            IDialogService dialogService)
         {
             _transaction = transaction;
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _transactionRepository = transactionRepository;
             _dialogService = dialogService;
             _markAsPaidCommand = new RelayCommand(MarkAsPaid, CanMarkAsPaid);
             foreach (var transactionProduct in transaction.TransactionProducts)
@@ -27,9 +33,9 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             }
         }
 
-        private readonly Transaction _transaction;
+        private readonly ITransaction _transaction;
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
 
         private readonly IDialogService _dialogService;
 
@@ -51,15 +57,8 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             {
                 if (_transaction.PayLater != null)
                 {
-
-                    using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
-                    {
-                        unitOfWork.Attach(_transaction.PayLater);
-                        _transaction.PayLater.PaidAt = DateTime.Now;
-                        _transaction.PayLater.IsPaid = true;
-                        unitOfWork.Save();
-
-                    }
+                    _transaction.MarkAsPaid();
+                    _transactionRepository.Update(_transaction);
                 }
                 _markAsPaidCommand.NotifyCanExecuteChanged();
             }

@@ -2,6 +2,8 @@
 using StoreManagementSystemX.Database.DAL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.StockPurchases.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using System;
@@ -16,20 +18,18 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 {
     public class StockPurchaseListViewModel : BaseViewModel
     {
-        public StockPurchaseListViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, IDialogService dialogService, IStockPurchaseCreationService stockPurchaseCreationService)
+        public StockPurchaseListViewModel(AuthContext authContext, Domain.Repositories.StockPurchases.Interfaces.IStockPurchaseRepository stockPurchaseRepository, IDialogService dialogService, IStockPurchaseCreationService stockPurchaseCreationService)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _stockPurchaseRepository = stockPurchaseRepository;
             _authContext = authContext;
             _createStockPurchaseWindowService = stockPurchaseCreationService;
             StockPurchases = new ObservableCollection<StockPurchaseViewModel>();
 
-            using(var unitOfWork = unitOfWorkFactory.CreateUnitOfWork())
+            foreach (var stockPurchase in stockPurchaseRepository.GetAll())
             {
-                foreach(var stockPurchase in unitOfWork.StockPurchaseRepository.Get(null, sp => sp.OrderByDescending(e => e.DateTime), "StockPurchaseProducts, StockPurchaseProducts.Product"))
-                {
-                    StockPurchases.Add(new StockPurchaseViewModel(stockPurchase));
-                }
+                StockPurchases.Add(new StockPurchaseViewModel(stockPurchase));
             }
+
             if (StockPurchases.Any())
             {
                 SelectedStockPurchase = StockPurchases.First();
@@ -38,7 +38,7 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
             NewStockPurchaseCommand = new RelayCommand(OnNewTransaction);
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        private readonly Domain.Repositories.StockPurchases.Interfaces.IStockPurchaseRepository _stockPurchaseRepository;
 
         private readonly AuthContext _authContext;
 
@@ -48,7 +48,7 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 
         public StockPurchaseViewModel? SelectedStockPurchase { get; set; }
 
-        public void AddStockPurchase(StockPurchase stockPurchase)
+        public void AddStockPurchase(IStockPurchase stockPurchase)
         {
             StockPurchases.Insert(0, new StockPurchaseViewModel(stockPurchase));
         }
@@ -59,15 +59,12 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
         {
             var newStockPurchaseId = _createStockPurchaseWindowService.CreateStockPurchase(_authContext);
             {
-                using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                if(newStockPurchaseId != null)
                 {
-                    if(newStockPurchaseId != null)
+                    var newStockPurchase = _stockPurchaseRepository.GetById((Guid)newStockPurchaseId);
+                    if(newStockPurchase != null)
                     {
-                        var newStockPurchase = unitOfWork.StockPurchaseRepository.GetById((Guid)newStockPurchaseId, "StockPurchaseProducts, StockPurchaseProducts.Product");
-                        if(newStockPurchase != null)
-                        {
-                            AddStockPurchase(newStockPurchase);
-                        }
+                        AddStockPurchase(newStockPurchase);
                     }
                 }
             }

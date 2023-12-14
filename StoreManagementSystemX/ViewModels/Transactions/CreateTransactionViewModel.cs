@@ -3,6 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using SQLitePCL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Transactions.Interfaces;
@@ -20,18 +24,21 @@ namespace StoreManagementSystemX.ViewModels.Transactions
     public class CreateTransactionViewModel : ObservableObject, ICreateTransactionViewModel
 
     {
-        public CreateTransactionViewModel(AuthContext authContext, IUnitOfWork unitOfWork, IDialogService dialogService, Action<Guid> onDone, Action onCancel)
+        public CreateTransactionViewModel(
+            AuthContext authContext, 
+            Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository,
+            Domain.Repositories.Products.Interfaces.IProductRepository productRepository,
+            IDialogService dialogService, 
+            Action<Guid> onDone, 
+            Action onClose)
         {
             _authContext = authContext;
-            _unitOfWork = unitOfWork;
+            _transactionRepository = transactionRepository;
+            _productRepository = productRepository;
             DialogService = dialogService;
-            _transaction = new Transaction
-            {
-                Id = Guid.NewGuid(),
-                SellerId = authContext.CurrentUser.Id
-            };
+            _transaction = authContext.CurrentUser.TransactionFactory.Create(authContext.CurrentUser.Id);
 
-            _onCancel = onCancel;
+            _onClose = onClose;
             _onDone = onDone;
 
             _doneCommand = new RelayCommand(OnDone, CanSubmitTransaction);
@@ -41,11 +48,14 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 
         private readonly AuthContext _authContext;
         public IDialogService DialogService;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly Transaction _transaction;
+
+        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
+        private readonly Domain.Repositories.Products.Interfaces.IProductRepository _productRepository;
+
+        private readonly ITransaction _transaction;
 
         private readonly Action<Guid> _onDone;
-        private readonly Action _onCancel;
+        private readonly Action _onClose;
 
         public ObservableCollection<ICreateTransactionProductViewModel> TransactionProducts { get; } = new ObservableCollection<ICreateTransactionProductViewModel>();
 
@@ -74,8 +84,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
             }
         }
 
-        private decimal _totalAmount;
-        public decimal TotalAmount { get => _totalAmount; set => SetProperty(ref _totalAmount, value); }
+        public decimal TotalAmount => _transaction.TotalAmount;
 
         private RelayCommand _doneCommand;
         public ICommand DoneCommand { get => _doneCommand; }
@@ -85,23 +94,21 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 
         public void AddProduct()
         {
-            var matchedProduct = _unitOfWork.ProductRepository.GetByBarcode(Barcode);
+            var matchedProduct = _productRepository.GetByBarcode(Barcode);
             if (matchedProduct != null)
             {
-                var transactionProduct = TransactionProducts.FirstOrDefault(e => e.ProductBarcode == matchedProduct.Barcode);
-                if (transactionProduct != null)
+                // check whether the product already exists in the transaction
+                var transactionProduct = _transaction.TransactionProducts.FirstOrDefault(e => e.ProductId == matchedProduct.Id);
+                if (transactionProduct == null) // product does not exist yet
                 {
-                    transactionProduct.Quantity += 1;
+                    AddProduct(matchedProduct);
                 }
-                else
+                else // product already exists
                 {
-                    var newTransactionProduct = new CreateTransactionProductViewModel(_unitOfWork, _transaction, matchedProduct);
-                    newTransactionProduct.ItemRemoved += OnRemoveTransactionProduct;
-                    newTransactionProduct.QuantityIncremented += OnTransactionProductQuantityIncrement;
-                    newTransactionProduct.QuantityDecremented += OnTransactionProductQuantityDecrement;
-                    TransactionProducts.Add(newTransactionProduct);
+                    IncrementTransactionProduct(Barcode);
                 }
-                TotalAmount += matchedProduct.SellingPrice;
+
+                OnPropertyChanged(nameof(TotalAmount));
             }
             else
             {
@@ -116,21 +123,35 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 
         private void OnDone()
         {
-            if (_isPayLater)
+            if (IsPayLater)
             {
-                var payLaterInstance = new PayLater { Id = Guid.NewGuid(), CustomerName = _customerName, TransactionId = _transaction.Id };
-                _unitOfWork.PayLaterRepository.Insert(payLaterInstance);
+                _transaction.SetPayLaterDetails(CustomerName);
             }
-
-            foreach (var transactionProduct in TransactionProducts)
-            {
-                transactionProduct.OnDone();
-            }
-
-            _transaction.DateTime = DateTime.Now;
-            _unitOfWork.TransactionRepository.Insert(_transaction);
-            _unitOfWork.Save();
+            _transactionRepository.Add(_transaction);
             _onDone(_transaction.Id);
+            _onClose();
+        }
+
+        private void IncrementTransactionProduct(string barcode)
+        {
+            var transactionProductVM = TransactionProducts.First(e => e.ProductBarcode == barcode);
+            transactionProductVM.IncrementQuantityCommand.Execute(null);
+
+        }
+
+        private void AddProduct(IProduct product)
+        {
+            var newTransactionProduct = _transaction.AddProduct(product);
+            var newTransactionProductViewModel = new CreateTransactionProductViewModel(_transactionRepository, _transaction, product);
+            SubscribeToTransactionProductEvents(newTransactionProductViewModel);
+            TransactionProducts.Add(newTransactionProductViewModel);
+        }
+
+        private void SubscribeToTransactionProductEvents(ICreateTransactionProductViewModel item)
+        {
+            item.ItemRemoved += OnRemoveTransactionProduct;
+            item.QuantityIncremented += OnTransactionProductQuantityIncrement;
+            item.QuantityDecremented += OnTransactionProductQuantityDecrement;
         }
 
         private void UnsubscribeToTransactionProductEvents(ICreateTransactionProductViewModel item)
@@ -144,24 +165,23 @@ namespace StoreManagementSystemX.ViewModels.Transactions
         {
             UnsubscribeToTransactionProductEvents(e.Item);
             TransactionProducts.Remove(e.Item);
-            TotalAmount -= e.Item.Subtotal;
+            OnPropertyChanged(nameof(TotalAmount));
             _doneCommand.NotifyCanExecuteChanged();
         }
 
         private void OnTransactionProductQuantityIncrement(object? sender, EventArgs<ICreateTransactionProductViewModel> e)
         {
-            TotalAmount += e.Item.Price;
-
+            OnPropertyChanged(nameof(TotalAmount));
         }
 
         private void OnTransactionProductQuantityDecrement(object? sender, EventArgs<ICreateTransactionProductViewModel> e)
         {
-            TotalAmount -= e.Item.Price;
+            OnPropertyChanged(nameof(TotalAmount));
         }
 
         private void OnCancel()
         {
-            _onCancel();
+            _onClose();
         }
 
 

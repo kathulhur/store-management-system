@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using StoreManagementSystemX.Database.DAL;
 using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Database.Models;
+using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
+using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.ViewModels.Users.Interfaces;
 using System;
@@ -15,11 +17,15 @@ using System.Windows.Input;
 
 namespace StoreManagementSystemX.ViewModels.Users
 {
-    public class CreateUserViewModel : ObservableObject, ICreateUserViewModel
+    public class CreateUserViewModel : ObservableObject, ICreateUserViewModel, ICreateUserArgs
     {
-        public CreateUserViewModel(AuthContext authContext, IUnitOfWorkFactory unitOfWorkFactory, Action<Guid> onCreate, Action close)
+        public CreateUserViewModel(
+            AuthContext authContext, 
+            Domain.Repositories.Users.Interfaces.IUserRepository userRepository, 
+            Action<Guid> onCreate, 
+            Action close)
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _userRepository = userRepository;
             _authContext = authContext;
             _onCreate = onCreate;
             _close = close;
@@ -27,20 +33,24 @@ namespace StoreManagementSystemX.ViewModels.Users
             CancelCommand = new RelayCommand(CancelCommandHandler);
         }
 
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        public Guid CreatorId => _authContext.CurrentUser.Id;
+        private string _username;
+        public string Username { get => _username; set => SetProperty(ref _username, value); }
+        public string Password { get; private set; }
+        
+        private readonly Domain.Repositories.Users.Interfaces.IUserRepository _userRepository;
 
         private readonly AuthContext _authContext;
 
         private Action<Guid> _onCreate;
         private Action _close;
 
-        private string _username;
-        public string Username { get => _username; set => SetProperty(ref _username, value); }
 
         private RelayCommand<string> _submitCommand;
         public ICommand SubmitCommand => _submitCommand;
 
         public ICommand CancelCommand { get; }
+
 
         private bool CanSubmitCommandExecute(string? password)
             => Username.Length > 0 && password != null && password.Length > 0;
@@ -49,16 +59,11 @@ namespace StoreManagementSystemX.ViewModels.Users
         {
             if (password != null && password.Length > 0)
             {
-                Console.WriteLine("password: " + password);
-                User newUser = new User { Id = Guid.NewGuid(), CreatedById = _authContext.CurrentUser.Id, Username = Username, Password = password };
-                using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
-                {
-                    unitOfWork.UserRepository.Insert(newUser);
-                    unitOfWork.Save();
-                    _onCreate(newUser.Id);
-                    _close();
-
-                }
+                Password = password;
+                var newlyCreatedUser = _authContext.CurrentUser.UserFactory.Create(this);
+                _userRepository.Add(newlyCreatedUser);
+                _onCreate(newlyCreatedUser.Id);
+                _close();
             }
         }
 
