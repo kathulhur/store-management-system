@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Transaction;
 
 namespace StoreManagementSystemX.Domain.Factories.Transactions
 {
@@ -21,6 +22,44 @@ namespace StoreManagementSystemX.Domain.Factories.Transactions
         public ITransaction Create(Guid sellerId)
         {
             return new Transaction(sellerId, Guid.NewGuid(), _payLaterFactory);
+        }
+
+        public ITransaction Reconstitute(ITransactionReconstitutionArgs transactionReconstitutionArgs)
+        {
+
+            PayLater? payLater = null;
+            if (transactionReconstitutionArgs.PayLater != null)
+            {
+                
+                payLater = new PayLater(
+                    transactionReconstitutionArgs.PayLater.CustomerName,
+                    transactionReconstitutionArgs.PayLater.IsPaid,
+                    transactionReconstitutionArgs.PayLater.PaidAt
+                );
+            }
+
+            var transactionProducts = new List<TransactionProduct>();
+            foreach(var transactionProductReconstitutionArgs in transactionReconstitutionArgs.TransactionProducts)
+            {
+                transactionProducts.Add(new TransactionProduct(
+                        transactionProductReconstitutionArgs.ProductId,
+                        transactionProductReconstitutionArgs.ProductName,
+                        transactionProductReconstitutionArgs.CostPrice,
+                        transactionProductReconstitutionArgs.SellingPrice,
+                        transactionProductReconstitutionArgs.QuantityBought
+                    )
+                );
+            }
+
+            return new Transaction(
+                transactionReconstitutionArgs.SellerId,
+                transactionReconstitutionArgs.Id,
+                transactionReconstitutionArgs.DateTime,
+                payLater,
+                transactionProducts,
+                _payLaterFactory
+
+            );
         }
     }
 }

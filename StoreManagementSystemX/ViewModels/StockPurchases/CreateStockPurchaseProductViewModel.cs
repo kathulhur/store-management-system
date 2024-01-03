@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
 using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
@@ -48,7 +46,6 @@ namespace StoreManagementSystemX.ViewModels.StockPurchases
 
         public string Name { get; }
 
-        private int _quantity;
         public int Quantity => _stockPurchase.StockPurchaseProducts.First(e => e.Barcode == _product.Barcode).QuantityBought;
 
         public decimal Price { get; }

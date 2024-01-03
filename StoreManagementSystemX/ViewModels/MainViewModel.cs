@@ -1,6 +1,4 @@
-﻿using StoreManagementSystemX.Database;
-using StoreManagementSystemX.Database.DAL;
-using StoreManagementSystemX.Domain.Factories.Products;
+﻿using StoreManagementSystemX.Domain.Factories.Products;
 using StoreManagementSystemX.Domain.Factories.StockPurchases;
 using StoreManagementSystemX.Domain.Factories.Transactions;
 using StoreManagementSystemX.Domain.Factories.Transactions.Interfaces;
@@ -11,6 +9,7 @@ using StoreManagementSystemX.Domain.Repositories.StockPurchases;
 using StoreManagementSystemX.Domain.Repositories.Transactions;
 using StoreManagementSystemX.Domain.Repositories.Users;
 using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
+using StoreManagementSystemX.Infrastructure.Persistence;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels;
@@ -29,33 +28,29 @@ namespace StoreManagementSystemX.ViewModels
 
         public MainViewModel()
         {
-            Context dbContext = new Context();
 
             var dialogService = new DialogService();
-            var unitOfWorkFactory = new UnitOfWorkFactory();
 
-            var productRepository = new Domain.Repositories.Products.ProductRepository();
-            var barcodeGenerationService = new BarcodeGenerationService(productRepository);
+            var barcodeGenerationService = new BarcodeGenerationService();
             var productFactory = new ProductFactory(barcodeGenerationService);
+            var productRepository = new ProductRepositoryImpl(productFactory);
 
-            var stockPurchaseRepository = new Domain.Repositories.StockPurchases.StockPurchaseRepository();
 
             var payLaterFactory = new PayLaterFactory();
             var transactionFactory = new TransactionFactory(payLaterFactory);
             var stockPurchaseFactory = new StockPurchaseFactory();
+            var stockPurchaseRepository = new StockPurchaseRepositoryImpl(stockPurchaseFactory);
             var userFactory = new Domain.Factories.Users.UserFactory(productFactory, transactionFactory, stockPurchaseFactory);
 
-            var transactionRepository = new Domain.Repositories.Transactions.TransactionRepository();
+            var transactionRepository = new TransactionRepositoryImpl(transactionFactory);
 
-            IUserRepository userRepository = new Domain.Repositories.Users.UserRepository(userFactory);
-            var admin = userFactory.Create(new CreateUserArgs { CreatorId = Guid.NewGuid(), Username = "admin", Password = "password" });
-            userRepository.Add(admin);
+            IUserRepository userRepository = new UserRepositoryImpl(userFactory);
+
             AuthenticationService = new AuthenticationService(userRepository, dialogService);
             LoginViewModel loginViewModel = new LoginViewModel(AuthenticationService, dialogService);
 
             NavigationService = new NavigationService(
                 loginViewModel,
-                unitOfWorkFactory,
                 AuthenticationService,
                 dialogService,
                 productRepository,
@@ -75,7 +70,6 @@ namespace StoreManagementSystemX.ViewModels
 
         public INavigationService NavigationService { get; }
         public IAuthenticationService AuthenticationService { get; }
-        private readonly Database.DAL.UserRepository _userRepository;
 
     }
 }

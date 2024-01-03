@@ -11,5 +11,7 @@ namespace StoreManagementSystemX.Domain.Factories.Transactions.Interfaces
     public interface ITransactionFactory
     {
         public ITransaction Create(Guid sellerId);
+
+        public ITransaction Reconstitute(ITransactionReconstitutionArgs transactionReconstitutionArgs);
     }
 }

@@ -24,6 +24,17 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
             SellerId = sellerId;
             DateTime = DateTime.Now;
             _payLaterFactory = payLaterFactory;
+            _transactionProducts = new List<TransactionProduct>();
+        }
+
+        internal Transaction(Guid sellerId, Guid id, DateTime dateTime, PayLater? payLater, List<TransactionProduct> transactionProducts, PayLaterFactory payLaterFactory)
+        {
+            SellerId = sellerId;
+            Id = id;
+            DateTime = dateTime;
+            _payLater = payLater;
+            _transactionProducts = transactionProducts;
+            _payLaterFactory = payLaterFactory;
         }
 
         private readonly PayLaterFactory _payLaterFactory;
@@ -32,13 +43,13 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
 
         public Guid Id { get; }
 
-        private IList<TransactionProduct> _transactionProducts = new List<TransactionProduct>();
+        private IList<TransactionProduct> _transactionProducts;
 
         public IReadOnlyList<ITransactionProduct> TransactionProducts => _transactionProducts.AsReadOnly();
 
         public decimal TotalAmount { get; private set; }
 
-        private PayLater _payLater { get; set; }
+        private PayLater? _payLater { get; set; }
 
         public IPayLater? PayLater => _payLater;
 
@@ -50,9 +61,10 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
 
             if (matchedProduct == null) // new product added
             {
-                var transactionProduct = new TransactionProduct(this, product);
+                var transactionProduct = new TransactionProduct(product);
                 _transactionProducts.Add(transactionProduct);
                 product.InStock -= 1;
+                TotalAmount += product.SellingPrice;
                 return transactionProduct;
             } else
             {
@@ -63,8 +75,11 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
         public ITransactionProduct IncrementProduct(IProduct product, int quantity = 1)
         {
             var transactionProduct = _transactionProducts.First(tp => tp.ProductId == product.Id);
+
             transactionProduct.QuantityBought += quantity;
             product.InStock -= quantity;
+
+            TotalAmount += product.SellingPrice * quantity;
 
             return transactionProduct;
         }
@@ -72,8 +87,14 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
         public ITransactionProduct DecrementProduct(IProduct product, int quantity = 1)
         {
             var transactionProduct = _transactionProducts.First(tp => tp.ProductId == product.Id);
+
+            if (quantity < 0 || quantity > transactionProduct.QuantityBought)
+                throw new ArgumentOutOfRangeException("Invalid Quantity argument");
+
             transactionProduct.QuantityBought -= quantity;
             product.InStock += quantity;
+
+            TotalAmount -= product.SellingPrice * quantity;
 
             return transactionProduct;
         }
@@ -83,6 +104,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
             var transactionProductFound = _transactionProducts.First();
             product.InStock += transactionProductFound.QuantityBought;
             _transactionProducts.Remove(transactionProductFound);
+
             TotalAmount -= transactionProductFound.TotalPrice;
 
             return transactionProductFound;
@@ -90,7 +112,11 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
 
         public void MarkAsPaid()
         {
-            _payLater.IsPaid = true;
+            if(_payLater != null)
+            {
+                _payLater.IsPaid = true;
+                _payLater.PaidAt = DateTime.Now;
+            }
         }
 
         public override bool Equals(object? obj)
@@ -108,28 +134,33 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
         public override string ToString()
             => $"{nameof(Transaction)}: {Id} - Total Amount: {TotalAmount}";
 
+
         public void SetPayLaterDetails(string customerName)
         {
             _payLater = (PayLater) _payLaterFactory.Create(customerName);
         }
 
 
-        // id value object
         public class TransactionProduct : ITransactionProduct
         {
-            internal TransactionProduct(Transaction transaction, IProduct product)
+            internal TransactionProduct(IProduct product)
             {
-                _transaction = transaction;
                 ProductId = product.Id;
-
                 ProductName = product.Name;
                 CostPrice = product.CostPrice;
                 SellingPrice = product.SellingPrice;
                 QuantityBought = 1;
             }
 
-            private Transaction _transaction;
-            
+            internal TransactionProduct(Guid productId, string productName, decimal costPrice, decimal sellingPrice, int quantityBought)
+            {
+                ProductId = productId;
+                ProductName = productName;
+                CostPrice = costPrice;
+                SellingPrice = sellingPrice;
+                QuantityBought = quantityBought;
+            }
+
             public Guid ProductId { get; }
 
             public string ProductName { get; }
@@ -138,20 +169,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
 
             public decimal SellingPrice { get; }
 
-            private int _quantityBought;
-            public int QuantityBought
-            {
-                get => _quantityBought;
-                internal set
-                {
-                    decimal oldTotalPrice = TotalPrice;
-                    _quantityBought = value;
-                    decimal newTotalPrice = TotalPrice;
-
-                    _transaction.TotalAmount = _transaction.TotalAmount - oldTotalPrice + newTotalPrice;
-
-                }
-            }
+            public int QuantityBought { get; internal set; }
 
 
             public decimal TotalPrice => SellingPrice * QuantityBought;

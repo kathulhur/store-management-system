@@ -12,5 +12,6 @@ namespace StoreManagementSystemX.Domain.Factories.Products.Interfaces
     {
         public IProduct Create(ICreateProductArgs createProductArgs);
 
+        public IProduct Reconstitute(IProductReconstitutionArgs productReconstitutionArgs);
     }
 }

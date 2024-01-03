@@ -1,5 +1,4 @@
 ﻿
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
 using StoreManagementSystemX.Views.Transactions;
 

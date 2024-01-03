@@ -1,5 +1,4 @@
-﻿using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
+﻿using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;

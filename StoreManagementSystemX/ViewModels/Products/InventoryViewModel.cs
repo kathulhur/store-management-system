@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SQLitePCL;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
 using StoreManagementSystemX.Domain.Repositories;
 using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;

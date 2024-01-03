@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using StoreManagementSystemX.Database.DAL;
 using StoreManagementSystemX.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,12 +14,10 @@ namespace StoreManagementSystemX.ViewModels
     {
         public LoginViewModel(IAuthenticationService authenticationService, IDialogService dialogService) {
             _username = string.Empty;
-            _unitOfWork = new UnitOfWork();
             _authenticationService = authenticationService;
             _dialogService = dialogService;
         }
 
-        private readonly UnitOfWork _unitOfWork;
         private readonly IAuthenticationService _authenticationService;
         private readonly IDialogService _dialogService;
 

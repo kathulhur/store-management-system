@@ -1,8 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using StoreManagementSystemX.Database.DAL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Factories.Users.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services;

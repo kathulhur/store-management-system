@@ -15,13 +15,11 @@ namespace StoreManagementSystemX.Services
     {
         private static readonly Random _random = new Random();
         private static readonly string BUSINESS_PREFIX = "6390";
-        private readonly IProductRepository _productRepository;
 
         // this service has a uses the EAN-13 which is a 13-digit format
         //      consisting of 12 numeric character + 1 error check bit
-        public BarcodeGenerationService(IProductRepository productRepository)
+        public BarcodeGenerationService()
         {
-            _productRepository = productRepository;
         }
 
         private string GenerateTwelveDigitString()
@@ -48,9 +46,10 @@ namespace StoreManagementSystemX.Services
         private bool IsUnique(string barcode)
         {
             // check for barcode collision
-            var matchedProduct = _productRepository.GetByBarcode(barcode);
+            //var matchedProduct = _productRepository.GetByBarcode(barcode);
 
-            return matchedProduct == null;
+            //return matchedProduct == null;
+            return true;
         }
 
         private string GenerateCheckDigit(string barcodeString)

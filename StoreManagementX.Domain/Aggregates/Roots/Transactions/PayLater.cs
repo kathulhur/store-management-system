@@ -9,17 +9,24 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Transactions
 {
     public class PayLater : IPayLater
     {
-        public PayLater(string customerName)
+        internal PayLater(string customerName)
         {
             CustomerName = customerName;
             IsPaid = false;
         }
 
-        public string CustomerName { get; set; } = String.Empty;
+        internal PayLater(string customerName, bool isPaid, DateTime? paidAt)
+        {
+            CustomerName = customerName;
+            IsPaid = isPaid;
+            PaidAt = paidAt;
+        }
+
+        public string CustomerName { get; internal set; } = String.Empty;
 
         public bool IsPaid { get; internal set; }
 
-        public DateTime? PaidAt { get; set; }
+        public DateTime? PaidAt { get; internal set; }
 
     }
 }

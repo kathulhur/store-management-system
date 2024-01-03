@@ -1,6 +1,4 @@
-﻿using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
-using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
+﻿using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using System;

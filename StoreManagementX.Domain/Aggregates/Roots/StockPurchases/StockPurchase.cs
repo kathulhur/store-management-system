@@ -22,6 +22,15 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
             DateTime = DateTime.Now;
         }
 
+        internal StockPurchase(Guid stockManagerId, Guid id, DateTime dateTime, decimal totalAmount, IList<StockPurchaseProduct> stockPurchaseProduct)
+        {
+            StockManagerId = stockManagerId;
+            Id = id;
+            DateTime = dateTime;
+            TotalAmount = totalAmount;
+            _stockPurchaseProduct = stockPurchaseProduct;
+        }
+
         public Guid Id { get; }
 
         private IList<StockPurchaseProduct> _stockPurchaseProduct = new List<StockPurchaseProduct>();
@@ -41,14 +50,15 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
 
             if (matchedProduct == null) // new product added
             {
-                var stockPurchaseProduct = new StockPurchaseProduct(this, product);
+                var stockPurchaseProduct = new StockPurchaseProduct(product);
                 _stockPurchaseProduct.Add(stockPurchaseProduct);
                 product.InStock += 1;
+                TotalAmount += product.CostPrice;
                 return stockPurchaseProduct;
             } else
             {
+                TotalAmount += product.CostPrice;
                 matchedProduct.QuantityBought += 1;
-                product.InStock += 1;
                 return matchedProduct;
             }
         }
@@ -58,8 +68,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
         {
             var stockPurchaseProduct = _stockPurchaseProduct.First(tp => tp.ProductId == product.Id);
             stockPurchaseProduct.QuantityBought += quantity;
-            product.InStock += quantity;
-
+            TotalAmount += product.CostPrice * quantity;
             return stockPurchaseProduct;
         }
 
@@ -67,8 +76,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
         {
             var stockPurchaseProduct = _stockPurchaseProduct.First(tp => tp.ProductId == product.Id);
             stockPurchaseProduct.QuantityBought -= quantity;
-            product.InStock -= quantity;
-
+            TotalAmount -= product.CostPrice * quantity;
             return stockPurchaseProduct;
         }
 
@@ -104,40 +112,31 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases
         // id value object
         public class StockPurchaseProduct : IStockPurchaseProduct
         {
-            internal StockPurchaseProduct(StockPurchase stockPurchase, IProduct product)
+            internal StockPurchaseProduct(IProduct product)
             {
-                _stockPurchase = stockPurchase;
                 ProductId = product.Id;
-
                 Name = product.Name;
                 Price = product.CostPrice;
                 Barcode = product.Barcode;
                 QuantityBought = 1;
             }
 
-            private StockPurchase _stockPurchase;
-            
+            internal StockPurchaseProduct (Guid productId, string barcode, string name, decimal price, int quantityBought)
+            {
+                ProductId = productId;
+                Name = name;
+                Price = price;
+                QuantityBought = quantityBought;
+                Barcode = barcode;
+            }
+
             public Guid ProductId { get; }
 
             public string Name { get; }
 
             public decimal Price { get; }
 
-            private int _quantityBought;
-            public int QuantityBought
-            {
-                get => _quantityBought;
-                internal set
-                {
-                    decimal oldTotalPrice = TotalCost;
-                    _quantityBought = value;
-                    decimal newTotalPrice = TotalCost;
-
-                    _stockPurchase.TotalAmount = _stockPurchase.TotalAmount - oldTotalPrice + newTotalPrice;
-
-                }
-            }
-
+            public int QuantityBought { get; internal set; }
 
             public decimal TotalCost => Price * QuantityBought;
 

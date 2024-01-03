@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services;

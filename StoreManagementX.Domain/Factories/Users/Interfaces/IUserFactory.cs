@@ -11,5 +11,7 @@ namespace StoreManagementSystemX.Domain.Factories.Users.Interfaces
     public interface IUserFactory
     {
         public IUser Create(ICreateUserArgs createUserArgs);
+
+        public IUser Reconstitute(IUserReconstitutionArgs reconstituteArgs);
     }
 }

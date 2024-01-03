@@ -12,7 +12,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions.Interfaces
     {
         public ObservableCollection<ITransactionRowViewModel> Transactions { get; }
 
-        public ITransactionRowViewModel SelectedTransaction { get; set; }
+        public ITransactionRowViewModel? SelectedTransaction { get; set; }
 
         public ICommand NewTransactionCommand { get; }
     }

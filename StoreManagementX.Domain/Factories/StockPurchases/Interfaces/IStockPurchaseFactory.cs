@@ -10,5 +10,7 @@ namespace StoreManagementSystemX.Domain.Factories.StockPurchases.Interfaces
     public interface IStockPurchaseFactory
     {
         public IStockPurchase Create(Guid stockManagerId);
+        public IStockPurchase Reconstitute(IStockPurchaseReconstitutionArgs args);
     }
+
 }

@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
 using StoreManagementSystemX.ViewModels.StockPurchases.Interfaces;
 using System;

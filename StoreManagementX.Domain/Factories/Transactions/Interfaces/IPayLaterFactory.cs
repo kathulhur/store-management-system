@@ -10,5 +10,7 @@ namespace StoreManagementSystemX.Domain.Factories.Transactions.Interfaces
     public interface IPayLaterFactory
     {
         public IPayLater Create(string customerName);
+
+        public IPayLater Reconstitute(IPayLaterReconstitutionArgs args);
     }
 }

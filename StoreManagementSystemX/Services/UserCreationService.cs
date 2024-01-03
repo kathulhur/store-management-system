@@ -1,5 +1,4 @@
-﻿using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
+﻿using StoreManagementSystemX.Domain.Repositories.Users.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.Views.Users;
 using System;

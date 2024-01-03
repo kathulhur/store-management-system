@@ -27,7 +27,7 @@ namespace StoreManagementSystemX.Domain.Tests.Aggregates
         {
             
             IProductRepository _productRepository = new ProductRepository();
-            IBarcodeGenerationService barcodeGenerationService = new BarcodeGenerationService(_productRepository);
+            IBarcodeGenerationService barcodeGenerationService = new BarcodeGenerationService();
             IProductFactory _productFactory = new ProductFactory(barcodeGenerationService);
 
             return _productFactory;

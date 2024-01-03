@@ -1,7 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using SQLitePCL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;

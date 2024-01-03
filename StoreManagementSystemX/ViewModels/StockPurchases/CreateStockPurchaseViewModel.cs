@@ -1,8 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using SQLitePCL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
 using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;

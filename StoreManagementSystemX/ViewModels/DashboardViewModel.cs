@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
@@ -28,7 +27,7 @@ namespace StoreManagementSystemX.ViewModels
             _transactionCreationService = transactionCreationService;
             TransactionsToday = new ObservableCollection<ITransactionRowViewModel>();
 
-            var transactions = _transactionRepository.GetAll();
+            var transactions = _transactionRepository.GetTransactionsToday();
             foreach (var transaction in transactions)
             {
                 TransactionsToday.Add(new TransactionRowViewModel(transactionRepository, _dialogService, transaction));

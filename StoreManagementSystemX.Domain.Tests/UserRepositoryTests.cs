@@ -27,7 +27,7 @@ namespace StoreManagementSystemX.Tests
         private UserFactory CreateUserFactory()
         {
             var productRepository = new ProductRepository();
-            var barcodeGenerationService = new BarcodeGenerationService(productRepository);
+            var barcodeGenerationService = new BarcodeGenerationService();
             var productFactory = new ProductFactory(barcodeGenerationService);
             var payLaterFactory = new PayLaterFactory();
             var transactionFactory = new TransactionFactory(payLaterFactory);

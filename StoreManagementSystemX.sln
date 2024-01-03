@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreManagementSystemX.Doma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreManagementSystemX.Tests", "StoreManagementSystemX.Tests\StoreManagementSystemX.Tests.csproj", "{0BF01CF6-E957-4F14-BA4A-35ABFC749C69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManagementSystemX.Infrastructure", "StoreManagementSystemX.Infrastructure\StoreManagementSystemX.Infrastructure.csproj", "{5A5B6544-6E84-4E68-9F78-0D8CAD1A31DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0BF01CF6-E957-4F14-BA4A-35ABFC749C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BF01CF6-E957-4F14-BA4A-35ABFC749C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BF01CF6-E957-4F14-BA4A-35ABFC749C69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A5B6544-6E84-4E68-9F78-0D8CAD1A31DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5B6544-6E84-4E68-9F78-0D8CAD1A31DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5B6544-6E84-4E68-9F78-0D8CAD1A31DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5B6544-6E84-4E68-9F78-0D8CAD1A31DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,7 +14,11 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Users.Interfaces
     {
         public Guid Id { get; }
 
+        public Guid CreatorId { get; }
+
         public string Username { get; set; }
+
+        public string Password { get; }
 
         public void ChangePassword(string password);
 

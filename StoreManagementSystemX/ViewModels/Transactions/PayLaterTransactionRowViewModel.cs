@@ -1,7 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using SQLitePCL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
@@ -19,7 +16,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
     public class PayLaterTransactionRowViewModel : BaseViewModel
     {
         public PayLaterTransactionRowViewModel(
-            Domain.Repositories.Transactions.Interfaces.ITransactionRepository transactionRepository, 
+            ITransactionRepository transactionRepository, 
             ITransaction transaction, 
             IDialogService dialogService)
         {
@@ -35,7 +32,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 
         private readonly ITransaction _transaction;
 
-        private readonly Domain.Repositories.Transactions.Interfaces.ITransactionRepository _transactionRepository;
+        private readonly ITransactionRepository _transactionRepository;
 
         private readonly IDialogService _dialogService;
 

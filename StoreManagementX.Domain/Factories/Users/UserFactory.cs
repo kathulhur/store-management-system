@@ -28,9 +28,24 @@ namespace StoreManagementSystemX.Domain.Factories.Users
             _transactionFactory = transactionFactory;
             _stockPurchaseFactory = stockPurchaseFactory;
         }
+
         public IUser Create(ICreateUserArgs createUserArgs)
         {
             return new User(createUserArgs.CreatorId, Guid.NewGuid(), createUserArgs.Username, createUserArgs.Password, this, _productFactory, _transactionFactory, _stockPurchaseFactory);
+        }
+
+        public IUser Reconstitute(IUserReconstitutionArgs userReconstitutionArgs)
+        {
+            return new User(
+                userReconstitutionArgs.CreatorId ?? Guid.Empty,
+                userReconstitutionArgs.Id,
+                userReconstitutionArgs.Username,
+                userReconstitutionArgs.Password,
+                this,
+                _productFactory,
+                _transactionFactory,
+                _stockPurchaseFactory
+            );
         }
     }
 }

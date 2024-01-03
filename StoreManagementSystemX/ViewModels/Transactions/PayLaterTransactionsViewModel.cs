@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Domain.Aggregates.Roots.Transactions.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Transactions.Interfaces;
 using StoreManagementSystemX.Services;
@@ -32,7 +30,7 @@ namespace StoreManagementSystemX.ViewModels.Transactions
 
             foreach(var transaction in _transactionRepository.GetAll())
             {
-                if(transaction != null)
+                if(transaction.PayLater != null)
                 {
                     Transactions.Add(new PayLaterTransactionRowViewModel(transactionRepository, transaction, dialogService));
                 }

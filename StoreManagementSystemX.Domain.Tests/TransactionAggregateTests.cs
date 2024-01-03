@@ -19,7 +19,7 @@ namespace StoreManagementSystemX.Domain.Tests
     {
         private static readonly PayLaterFactory payLaterFactory = new PayLaterFactory();
         private static readonly ITransactionFactory _transactionFactory = new TransactionFactory(payLaterFactory);
-        private static readonly IProductFactory _productFactory = new ProductFactory(new BarcodeGenerationService(new ProductRepository()));
+        private static readonly IProductFactory _productFactory = new ProductFactory(new BarcodeGenerationService());
 
         private ITransaction CreateEmptyTransaction()
         {

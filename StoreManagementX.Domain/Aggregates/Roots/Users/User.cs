@@ -46,7 +46,7 @@ namespace StoreManagementSystemX.Domain.Aggregates.Roots.Users
 
         public IStockPurchaseFactory StockPurchaseFactory { get; internal set; }
 
-        internal string Password;
+        public string Password { get; private set; }
 
         public void ChangePassword(string password)
         {

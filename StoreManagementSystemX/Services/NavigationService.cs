@@ -1,7 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using StoreManagementSystemX.Database;
-using StoreManagementSystemX.Database.DAL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
 using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels;
@@ -23,7 +20,6 @@ namespace StoreManagementSystemX.Services
         public NavigationService
         (
             BaseViewModel initialViewModel,
-            IUnitOfWorkFactory unitOfWorkFactory,
             IAuthenticationService authenticationService,
             IDialogService dialogService,
             Domain.Repositories.Products.Interfaces.IProductRepository productRepository,
@@ -34,7 +30,6 @@ namespace StoreManagementSystemX.Services
         {
             _currentViewModel = initialViewModel;
             _authenticationService = authenticationService;
-            _unitOfWorkFactory = unitOfWorkFactory;
             _dialogService = dialogService;
             _productRepository = productRepository;
             _stockPurchaseRepository = stockPurchaseRepository;
@@ -48,7 +43,6 @@ namespace StoreManagementSystemX.Services
             _transactionCreationService = new TransactionCreationService(_transactionRepository, _productRepository, _dialogService);
 
         }
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IBarcodeImageService _barcodeImageService;
         private readonly IDialogService _dialogService;
         private readonly ProductUpdateService _productUpdateService;
@@ -69,15 +63,8 @@ namespace StoreManagementSystemX.Services
             get => _currentViewModel;
             set => SetProperty(ref _currentViewModel, value);
         }
-        private UnitOfWork? _unitOfWork;
         public void NavigateTo(View view)
         {
-            if (_unitOfWork != null)
-            {
-                _unitOfWork.Dispose();
-            }
-
-            _unitOfWork = new UnitOfWork();
             if (view == View.Login)
             {
                 CurrentViewModel = new LoginViewModel(_authenticationService, _dialogService);

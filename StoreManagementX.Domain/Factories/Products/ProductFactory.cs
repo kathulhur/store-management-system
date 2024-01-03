@@ -29,5 +29,18 @@ namespace StoreManagementSystemX.Domain.Factories.Products
                 return new Product(args.CreatorId, Guid.NewGuid(), args.Barcode, args.Name, args.CostPrice, args.SellingPrice);
             }
         }
+
+        public IProduct Reconstitute(IProductReconstitutionArgs productReconstitutionArgs)
+        {
+            return new Product(
+                productReconstitutionArgs.CreatorId,
+                productReconstitutionArgs.Id,
+                productReconstitutionArgs.Barcode,
+                productReconstitutionArgs.Name,
+                productReconstitutionArgs.CostPrice,
+                productReconstitutionArgs.SellingPrice,
+                productReconstitutionArgs.InStock
+            );
+        }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using NSubstitute;
-using StoreManagementSystemX.Database.DAL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Database.Models;
 using StoreManagementSystemX.Services;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.ViewModels.Transactions;

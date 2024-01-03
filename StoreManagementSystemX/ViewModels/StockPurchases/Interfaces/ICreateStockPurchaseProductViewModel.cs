@@ -1,5 +1,4 @@
-﻿using StoreManagementSystemX.Database.Models;
-using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
+﻿using StoreManagementSystemX.Domain.Aggregates.Roots.Products.Interfaces;
 using StoreManagementSystemX.Domain.Aggregates.Roots.StockPurchases.Interfaces;
 using System;
 using System.Collections.Generic;

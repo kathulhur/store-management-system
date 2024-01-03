@@ -19,5 +19,14 @@ namespace StoreManagementSystemX.Domain.Factories.Transactions.Interfaces
         {
             return new PayLater(customerName);
         }
+
+        public IPayLater Reconstitute(IPayLaterReconstitutionArgs args)
+        {
+            return new PayLater(
+                args.CustomerName,
+                args.IsPaid,
+                args.PaidAt
+            );
+        }
     }
 }

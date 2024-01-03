@@ -34,6 +34,11 @@ namespace StoreManagementSystemX.Domain.Repositories.Transactions
             return _transactions.Find(t => t.Id == id);
         }
 
+        public IEnumerable<ITransaction> GetTransactionsToday()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Remove(Guid id)
         {
             var transactionToRemove = _transactions.Find(t => t.Id == id);

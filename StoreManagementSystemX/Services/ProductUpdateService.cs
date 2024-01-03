@@ -1,6 +1,4 @@
-﻿using SQLitePCL;
-using StoreManagementSystemX.Database.DAL.Interfaces;
-using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
+﻿using StoreManagementSystemX.Domain.Repositories.Products.Interfaces;
 using StoreManagementSystemX.Services.Interfaces;
 using StoreManagementSystemX.Views.Products;
 using System;
